@@ -8,20 +8,20 @@ using TXM.Core.Models;
 namespace TXM.Core
 {
     [Serializable]
-	public class IARules : AbstractRules
+	public class ShatterpointRules : AbstractRules
 	{
-        private new static string name = "Star Wars\u2122: Imperial Assault";
+        private new static string name = "Star Wars\u2122: Shatterpoint\u2122";
 
-        public IARules()
+        public ShatterpointRules()
         {
             IsDrawPossible = false;
-            OptionalFields = new List<string>() { "eSoS" };
+            OptionalFields = new List<string>() { "MoV" };
             IsDoubleElimination = false;
             IsRandomSeeding = true;
-            IsWinnerDropDownNeeded = false;
-            DefaultMaxPoints = 40;
-            Factions = new string[] { "Rebel", "Imperial", "Mercenary" };
-            DefaultTime = 65;
+            IsWinnerDropDownNeeded = true;
+            DefaultMaxPoints = 0;
+            Factions = new string[] { "Fall of the Jedi", "Age of Rebellion" };
+            DefaultTime = 75;
             base.name = name;
         }
 
@@ -40,12 +40,17 @@ namespace TXM.Core
             }
 
             //ID == -1 => Bye
-            if (result.EnemyID == -1 || result.EnemyID == -2)
-            {
-                newResult = new Result(1, 0, result.EnemyID, 1, result.WinnerID);
-            }
+            if (result.EnemyID == -1)
+			{
+				newResult = new Result((int)(0.5 * result.MaxPoints), 0, result.EnemyID, result.MaxPoints, result.WinnerID);
+			}
+			//ID == -2 => WonBye
+			else if (result.EnemyID == -2)
+			{
+				newResult = new Result((int) result.MaxPoints, 0, result.EnemyID, result.MaxPoints, result.WinnerID);
+			}
 
-            int tP = newResult.Destroyed - newResult.Lost;
+			int tP = newResult.Destroyed - newResult.Lost;
 			if (tP > 0)
 			{
 				tP = 1;
@@ -59,6 +64,9 @@ namespace TXM.Core
 				tP = 0;
 			}
 
+			TmarginOfVictory = f.Invoke(0, (newResult.Destroyed - newResult.Lost + newResult.MaxPoints));
+			TdestroyedPoints = f.Invoke(0, newResult.Destroyed);
+			TlostPoints = f.Invoke(0, newResult.Lost);
 			TtournamentPoints = f.Invoke(0, tP);
 			switch (tP)
 			{
@@ -75,7 +83,7 @@ namespace TXM.Core
 
         public override ObservableCollection<Models.Player> SortTable(ObservableCollection<Models.Player> unsorted)
         {
-            var t = unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.StrengthOfSchedule).ThenByDescending(x => x.ExtendedStrengthOfSchedule).ThenBy(x => x.Order).ToList();
+            var t = unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.MarginOfVictory).ThenByDescending(x => x.StrengthOfSchedule).ThenBy(x => x.Order).ToList();
             for (int i = 0; i < t.Count; i++)
                 t[i].Rank = i + 1;
             return new ObservableCollection<Player>(t);

@@ -15,7 +15,7 @@ public partial class Round: ObservableObject
         get => roundNo;
         set
         {
-            roundText = $"Round {value}";
+            RoundText = $"Round {value}";
             roundNo = value;
         }
     }

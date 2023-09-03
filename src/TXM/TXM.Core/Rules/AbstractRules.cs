@@ -23,6 +23,7 @@ namespace TXM.Core
             IARules.GetRuleName(),
             LegionRules.GetRuleName(),
             SWLCGRules.GetRuleName(),
+            ShatterpointRules.GetRuleName(),
             XWingRules.GetRuleName(),
             XWing2Rules.GetRuleName(),
             XWing2LegacyRules.GetRuleName(),
@@ -39,6 +40,7 @@ namespace TXM.Core
             ArmadaRules.GetRuleName(),
             IARules.GetRuleName(),
             LegionRules.GetRuleName(),
+            ShatterpointRules.GetRuleName(),
             XWingRules.GetRuleName(),
             XWing2Rules.GetRuleName(),
             XWing2LegacyRules.GetRuleName(),
@@ -89,6 +91,8 @@ namespace TXM.Core
                 return new DiceThroneRules();
             else if (name == WarmachineRules.GetRuleName())
                 return new WarmachineRules();
+            else if (name == ShatterpointRules.GetRuleName())
+                return new ShatterpointRules();
             return null;
         }
 
@@ -229,7 +233,7 @@ namespace TXM.Core
 
         #region Abstract Methods
         protected abstract bool CalculateResult(Result result, Func<int, int, int> f);
-        public abstract ObservableCollection<Models.Player> SortTable(ObservableCollection<Models.Player> unsorted);
+        public abstract ObservableCollection<Player> SortTable(ObservableCollection<Player> unsorted);
         #endregion
     }
 }

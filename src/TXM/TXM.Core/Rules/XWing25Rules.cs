@@ -88,12 +88,13 @@ namespace TXM.Core
             return tP == 1;
         }
 
-        public override ObservableCollection<Models.Player> SortTable(ObservableCollection<Models.Player> unsorted)
+        public override ObservableCollection<Player> SortTable(ObservableCollection<Player> unsorted)
         {
-            ObservableCollection<Models.Player> t = (ObservableCollection<Models.Player>)unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.StrengthOfSchedule).ThenBy(x => x.MarginOfVictory).ThenBy(x => x.Order);
+            var t = unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.StrengthOfSchedule).ThenBy(x => x.MarginOfVictory).ThenBy(x => x.Order).ToList();
+
             for (int i = 0; i < t.Count; i++)
                 t[i].Rank = i + 1;
-            return t;
+            return new ObservableCollection<Player>(t);
         }
     }
 }

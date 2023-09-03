@@ -63,10 +63,10 @@ namespace TXM.Core
 
         public override ObservableCollection<Models.Player> SortTable(ObservableCollection<Models.Player> unsorted)
         {
-            ObservableCollection<Models.Player> t = (ObservableCollection<Models.Player>)unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.StrengthOfSchedule).ThenByDescending(x => x.ExtendedStrengthOfSchedule).ThenBy(x => x.Order);
+            var t = unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.StrengthOfSchedule).ThenByDescending(x => x.ExtendedStrengthOfSchedule).ThenBy(x => x.Order).ToList();
             for (int i = 0; i < t.Count; i++)
                 t[i].Rank = i + 1;
-            return t;
+            return new ObservableCollection<Player>(t);
         }
     }
 }

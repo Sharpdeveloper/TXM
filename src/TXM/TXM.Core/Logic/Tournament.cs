@@ -369,7 +369,23 @@ public partial class Tournament : ObservableObject
         foreach (var pairing in results)
         {
             var player1 = Enumerable.First<Player>(Participants, x => x.ID == pairing.Player1ID);
-            var player2 = Enumerable.First<Player>(Participants, x => x.ID == pairing.Player2ID);
+            Player player2;
+            if (pairing.Player2ID == Player.Bye.ID)
+            {
+                player2 = Player.Bye;
+            }
+            else if (pairing.Player2ID == Player.WonBye.ID)
+            {
+                player2 = Player.WonBye;
+            }
+            else if (pairing.Player2ID == Player.Bonus.ID)
+            {
+                player2 = Player.Bonus;
+            }
+            else
+            {
+                player2 = Enumerable.First<Player>(Participants, x => x.ID == pairing.Player2ID);
+            }
             Result diffResult;
             if (pairing.Winner == State.Text.Player1)
             {

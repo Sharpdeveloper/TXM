@@ -46,7 +46,7 @@ public partial class SettingsViewModel : ObservableValidator
 
     public char PathSeparator { get; set; }
 
-    public string ImageName => _bgImagePath?[(_bgImagePath.LastIndexOf(PathSeparator) + 1)..] ?? "";
+    public string ImageName => BgImagePath?[(BgImagePath.LastIndexOf(PathSeparator) + 1)..] ?? "";
 
     [ObservableProperty]
     private int _randomMinutes;
