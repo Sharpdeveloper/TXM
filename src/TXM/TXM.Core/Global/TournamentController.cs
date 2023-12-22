@@ -123,7 +123,7 @@ public class TournamentController
         string file = "";
         if (displayItem == DisplayItem.Table && ActiveTournament != null)
         {
-            file = State.Io.PrintPlayerList();
+            file = State.Io.PrintPlayerList(false);
         }
         else if (displayItem == DisplayItem.Pairings)
         {
@@ -136,6 +136,10 @@ public class TournamentController
         else if (displayItem == DisplayItem.BestInFaction)
         {
             file = State.Io.PrintBestInFaction();
+        }
+        else if (displayItem == DisplayItem.Lists)
+        {
+            file = State.Io.PrintPlayerList(true);
         }
 
         if (print)
@@ -340,7 +344,12 @@ public class TournamentController
 
             if (ovm.IsPairingOutput)
             {
-                sb.Append(State.Io.CreateOutputForTable(ActiveTournament, true));
+                sb.Append(State.Io.CreateOutputForTable(ActiveTournament, true, false));
+            }
+            
+            if (ovm.IsListOutput)
+            {
+                sb.Append(State.Io.CreateOutputForTable(ActiveTournament, true, true));
             }
 
             State.Clipboard.SetText(sb.ToString());

@@ -109,6 +109,7 @@ public sealed class Texts
         "Check, if the player has given his army / squad list to the TO (if any).";
 
     public string ListGivenShort { get; set; } = "L";
+    public string Lists { get; set; } = "Lists";
     public string Lock { get; set; } = "Locks the Pairing, so it can't be accidentally changed.";
     public string LockShort { get; set; } = "L";
     public string Losses { get; set; } = "Losses";
@@ -147,6 +148,7 @@ public sealed class Texts
     public string MenuPlayerManagement { get; set; } = "Player Management";
     public string MenuPrint { get; set; } = "Print";
     public string MenuPrintBestInFaction { get; set; } = "Print Best in Faction";
+    public string MenuPrintLists { get; set; } = "Print Army-/Squadlists";
     public string MenuPrintPairingsWith { get; set; } = "Print Pairings (with Results)";
     public string MenuPrintPairingsWithout { get; set; } = "Print Pairings (without Results)";
     public string MenuPrintScoreSheets { get; set; } = "Print Score Sheet";
@@ -154,7 +156,10 @@ public sealed class Texts
     public string MenuResetLastResults { get; set; } = "Reset last results";
     public string MenuSave { get; set; } = "Save";
     public string MenuSettings { get; set; } = "Settings";
+    public string MenuShowBestInFaction { get; set; } = "Show Best in Faction";
+    public string MenuShowLists { get; set; } = "Show Army-/Squadlists";
     public string MenuShowPairings { get; set; } = "Show Pairings";
+    public string MenuShowResults { get; set; } = "Show Results";
     public string MenuShowTable { get; set; } = "Show Table";
     public string MenuSupport { get; set; } = "Support TXM";
     public string MenuT3Export { get; set; } = "T3 Export";
@@ -170,6 +175,7 @@ public sealed class Texts
     public string ModifiedLossesShort { get; set; } = "ML";
     public string ModifiedWins { get; set; } = "Modified Wins";
     public string ModifiedWinsShort { get; set; } = "MW";
+    public string Name { get; set; } = "Name";
     public string NewLanguageInfo { get; set; } = "To apply the new language, you have to restart TXM.";
     public string NewPlayer { get; set; } = "New Player";
     public string NewTournament { get; set; } = "New Tournament";

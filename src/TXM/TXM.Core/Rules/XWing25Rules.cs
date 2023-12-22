@@ -51,7 +51,7 @@ namespace TXM.Core
             //ID == -2 => WonBye
             else if (result.EnemyID == -2)
             {
-                newResult = new Result((int)(0.9 * result.MaxPoints), 0, result.EnemyID, result.MaxPoints, result.WinnerID);
+                newResult = new Result(result.MaxPoints, 0, result.EnemyID, result.MaxPoints, result.WinnerID);
             }
 
             var tP = newResult.WinnerID == -99 ? -1 : newResult.Destroyed - newResult.Lost;

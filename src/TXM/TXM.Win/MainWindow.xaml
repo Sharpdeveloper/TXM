@@ -67,6 +67,8 @@
                                       Command="{Binding PrintScoreSheetCommand}" />
                             <MenuItem Header="{Binding Text.MenuPrintBestInFaction}"
                                       Command="{Binding PrintBestInFactionCommand}" />
+                            <MenuItem Header="{Binding Text.MenuPrintLists}"
+                                      Command="{Binding PrintListsCommand}" />
                         </MenuItem>
                         <MenuItem Header="{Binding Text.MenuSettings}" Command="{Binding ShowSettingsCommand}" />
                         <MenuItem Header="{Binding Text.MenuExit}" Click="Close_Click" />
@@ -98,6 +100,7 @@
                         <MenuItem Header="{Binding Text.MenuShowTable}" Command="{Binding ShowTableCommand}" />
                         <MenuItem Header="{Binding Text.MenuShowResults}" Command="{Binding ShowResultsCommand}" />
                         <MenuItem Header="{Binding Text.MenuShowBestInFaction}" Command="{Binding ShowBestInFactionCommand}" />
+                        <MenuItem Header="{Binding Text.MenuShowLists}" Command="{Binding ShowListsCommand}" />
                         <MenuItem Header="{Binding Text.MenuBBCODE}" Command="{Binding GetBBCodeCommand}" />
                     </MenuItem>
                     <MenuItem Header="{Binding Text.MenuTools}">

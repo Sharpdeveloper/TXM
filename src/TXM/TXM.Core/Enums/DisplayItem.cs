@@ -5,5 +5,6 @@ public enum DisplayItem
     Table,
     Pairings,
     Results,
-    BestInFaction
+    BestInFaction,
+    Lists
 }

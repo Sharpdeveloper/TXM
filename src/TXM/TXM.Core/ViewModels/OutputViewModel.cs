@@ -20,4 +20,7 @@ public partial class OutputViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isTableOutput;
+    
+    [ObservableProperty]
+    private bool _isListOutput;
 }

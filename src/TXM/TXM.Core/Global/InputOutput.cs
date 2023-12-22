@@ -257,6 +257,7 @@ public sealed class InputOutput
         {
             return Settings.GetInstance();
         }
+
         var sb = new StringBuilder();
         using (StreamReader sr = new StreamReader(SettingsFile))
         {
@@ -265,9 +266,10 @@ public sealed class InputOutput
                 sb.Append(line);
             }
         }
+
         return JsonSerializer.Deserialize<Settings>(sb.ToString(), options);
     }
-    
+
     /// <summary>
     /// Load the language from the filesystem
     /// </summary>
@@ -279,6 +281,7 @@ public sealed class InputOutput
         {
             return Texts.GetInstance();
         }
+
         var sb = new StringBuilder();
         using (StreamReader sr = new StreamReader(file))
         {
@@ -288,7 +291,7 @@ public sealed class InputOutput
             }
         }
 
-        return (Texts) JsonSerializer.Deserialize<Texts>(sb.ToString(), options);
+        return (Texts)JsonSerializer.Deserialize<Texts>(sb.ToString(), options);
         //Texts.SetInstance(JsonSerializer.Deserialize<Texts>(sb.ToString(), options));
         //State.Text = Texts.GetInstance();
     }
@@ -382,12 +385,12 @@ public sealed class InputOutput
     /// <param name="tournament">The Tournament which should be prepared for output</param>
     /// <param name="bbcode">True for BBCODE, false for HTML</param>
     /// <returns>A string with the whole html/bbcode</returns>
-    internal string CreateOutputForTable(Tournament tournament, bool bbcode)
+    internal string CreateOutputForTable(Tournament tournament, bool bbcode, bool lists)
     {
         StringBuilder sb = new StringBuilder();
         string title = tournament.Name + $" - {State.Text.Table} - {State.Text.Round} {tournament.DisplayedRound}";
 
-        string head, tb, te, rb, re, db, de, end, nl = Environment.NewLine;
+        string head, tb, te, rb, re, db, de, end, ab1, ab2, ae, nl = Environment.NewLine;
 
         if (bbcode)
         {
@@ -398,6 +401,9 @@ public sealed class InputOutput
             re = "[/tr]";
             db = "[td]";
             de = "[/td]";
+            ab1 = "[url=";
+            ab2 = "]";
+            ae = "[/url]";
             end = nl;
         }
         else
@@ -411,6 +417,9 @@ public sealed class InputOutput
             db = "<td>";
             de = "</td>";
             end = "</body></html>";
+            ab1 = "<a href=\"";
+            ab2 = "\">";
+            ae = "</a>";
         }
 
         sb.Append(head);
@@ -418,13 +427,10 @@ public sealed class InputOutput
         sb.Append(tb);
         sb.Append(rb);
         sb.Append(db);
-        sb.Append("#"); //Rank
+        sb.Append(State.Text.RankShort); //Rank
         sb.Append(de);
         sb.Append(db);
-        sb.Append(State.Text.Firstname); //Firstname
-        sb.Append(de);
-        sb.Append(db);
-        sb.Append(State.Text.Nickname); //Nickname
+        sb.Append(State.Text.Name); //Displayname
         sb.Append(de);
         sb.Append(db);
         sb.Append(State.Text.Team); //Team
@@ -479,12 +485,19 @@ public sealed class InputOutput
             sb.Append(de);
         }
 
+        if (lists)
+        {
+            sb.Append(db);
+            sb.Append(State.Text.Lists);
+            sb.Append(de);
+        }
+
         sb.Append(re);
         sb.Append(nl);
 
         var participants = tournament.Participants;
 
-        foreach (Models.Player p in participants)
+        foreach (Player p in participants)
         {
             sb.Append(rb);
             sb.Append(db);
@@ -546,6 +559,23 @@ public sealed class InputOutput
             {
                 sb.Append(db);
                 sb.Append(p.ExtendedStrengthOfSchedule); //extended Strength of Schedule
+                sb.Append(de);
+            }
+            if (lists)
+            {
+                sb.Append(db);
+                if (p.SquadList.Contains("http"))
+                {
+                    sb.Append(ab1);
+                    sb.Append(p.SquadList);
+                    sb.Append(ab2);
+                    sb.Append(p.SquadList);
+                    sb.Append(ae);
+                }
+                else
+                {
+                    sb.Append(p.SquadList);
+                }
                 sb.Append(de);
             }
 
@@ -624,9 +654,12 @@ public sealed class InputOutput
 
         sb.Append(tb);
         sb.Append(rb);
-        sb.Append(db);
-        sb.Append(State.Text.TableNoShort); //Table Number
-        sb.Append(de);
+        if(result)
+        {
+            sb.Append(db);
+            sb.Append(State.Text.TableNoShort); //Table Number
+            sb.Append(de);
+        }
         sb.Append(db);
         sb.Append(State.Text.Player1); //Player 1
         sb.Append(de);
@@ -638,13 +671,18 @@ public sealed class InputOutput
             sb.Append(db);
             sb.Append(State.Text.Score); //Score
             sb.Append(de);
+            if (tournament.Rule.IsDrawPossible)
+            {
+                sb.Append(db);
+                sb.Append(State.Text.Winner); //Winner
+                sb.Append(de);
+            }
         }
-
-        if (result && tournament.Rule.IsDrawPossible)
+        else
         {
-            sb.Append(db);
-            sb.Append(State.Text.Winner); //Winner
-            sb.Append(de);
+                sb.Append(db);
+                sb.Append(State.Text.TableNoShort); //Table Number
+                sb.Append(de);
         }
 
         sb.Append(re);
@@ -661,12 +699,28 @@ public sealed class InputOutput
             return "";
         }
 
-        foreach (Pairing p in tournament.Rounds[round].Pairings)
+        var pairings = tournament.Rounds[round].Pairings.Select(p => new Pairing(p)).ToList();
+        if (!result)
+        {
+            foreach (var p in tournament.Rounds[round].Pairings)
+            {
+                pairings.Add(new Pairing(p));
+                (pairings[^1].Player1, pairings[^1].Player2) =
+                    (tournament.GetPlayerById(pairings[^1].Player2ID), tournament.GetPlayerById(pairings[^1].Player1ID));
+            }
+        }
+
+        var sorted = pairings.OrderBy(x => x.Player1Name).ToList();
+
+        foreach (Pairing p in sorted)
         {
             sb.Append(rb);
-            sb.Append(db);
-            sb.Append(p.TableNo); //Table Number
-            sb.Append(de);
+            if(result)
+            {
+                sb.Append(db);
+                sb.Append(p.TableNo); //Table Number
+                sb.Append(de);
+            }
             sb.Append(db);
             sb.Append(p.Player1Name); //Player 1
             sb.Append(de);
@@ -678,12 +732,17 @@ public sealed class InputOutput
                 sb.Append(db);
                 sb.Append($"{p.Player1Score}:{p.Player2Score}"); //Score
                 sb.Append(de);
+                if (tournament.Rule.IsDrawPossible)
+                {
+                    sb.Append(db);
+                    sb.Append(p.Winner); //Winner
+                    sb.Append(de);
+                }
             }
-
-            if (result && tournament.Rule.IsDrawPossible)
+            else
             {
                 sb.Append(db);
-                sb.Append(p.Winner); //Winner
+                sb.Append(p.TableNo); //Table Number
                 sb.Append(de);
             }
 
@@ -726,10 +785,27 @@ public sealed class InputOutput
     /// </summary>
     /// <param name="tournament">The tournament which players should be printed</param>
     /// <returns>The file name which contains the HTML</returns>
-    internal string PrintPlayerList()
+    internal string PrintPlayerList(bool lists)
     {
         var tournament = State.Controller.ActiveTournament;
-        string print = CreateOutputForTable(tournament, false);
+        string print = CreateOutputForTable(tournament, false, lists);
+        if (!Directory.Exists(TempPath))
+        {
+            Directory.CreateDirectory(TempPath);
+        }
+
+        using (StreamWriter sw = new StreamWriter(PrintFile, false))
+        {
+            sw.Write(print);
+        }
+
+        return PrintFile;
+    }
+    
+    internal string PrintPlayerWithSquadLists()
+    {
+        var tournament = State.Controller.ActiveTournament;
+        string print = CreateOutputForTable(tournament, false, true);
         if (!Directory.Exists(TempPath))
         {
             Directory.CreateDirectory(TempPath);
@@ -893,7 +969,7 @@ public sealed class InputOutput
             sw.Write(JsonSerializer.Serialize(State.Setting, options));
         }
     }
-    
+
     /// <summary>
     /// Saves the current language
     /// </summary>
@@ -981,7 +1057,7 @@ public sealed class InputOutput
 
     public (List<LocalFile> Files, char Separator) GetLanguages() =>
         (GetLocalLanguages(), Path.DirectorySeparatorChar);
-    
+
 
     public (List<LocalFile> Files, char Separator) CheckLanguages()
     {
@@ -1017,8 +1093,8 @@ public sealed class InputOutput
 
             localFiles = GetLocalLanguages();
         }
-        
-        return (localFiles, Path.DirectorySeparatorChar );
+
+        return (localFiles, Path.DirectorySeparatorChar);
     }
 
     private List<LocalFile> GetLocalLanguages()
@@ -1137,221 +1213,230 @@ public sealed class InputOutput
     }
 
     #endregion
-    
+
     public string PrintBestInFaction()
+    {
+        var tournament = State.Controller.ActiveTournament;
+        string print = WriteFactions(tournament, false);
+        if (!Directory.Exists(TempPath))
+            Directory.CreateDirectory(TempPath);
+        using (StreamWriter sw = new StreamWriter(PrintFile, false))
         {
-            var tournament = State.Controller.ActiveTournament;
-            string print = WriteFactions(tournament, false);
-            if (!Directory.Exists(TempPath))
-                Directory.CreateDirectory(TempPath);
-            using (StreamWriter sw = new StreamWriter(PrintFile, false))
-            {
-                sw.Write(print);
-            }
-
-            return PrintFile;
+            sw.Write(print);
         }
 
-        private string WriteFactions(Tournament tournament, bool bbcode)
+        return PrintFile;
+    }
+
+    private string WriteFactions(Tournament tournament, bool bbcode)
+    {
+        StringBuilder sb = new StringBuilder();
+        string title = tournament.Name + " - Best in Factions";
+
+        string head = "<!DOCTYPE html><meta charset=\"UTF-8\"><html><head><title>" + title +
+                      "</title></head><body><h2>" + title + "</h2> <br />";
+        string hs = "<h3>";
+        string he = "</h3>";
+        string tb = "<table>"; //Table begin
+        string te = "</table>"; //Table end
+        string rb = "<tr>"; //Table row begin
+        string re = "</tr>"; //Table row end
+        string db = "<td>"; //Table data begin
+        string de = "</td>"; //Table data end
+        string end = "</body></html>";
+        string blank = "<br />";
+        string nl = Environment.NewLine;
+
+        if (bbcode)
         {
-            StringBuilder sb = new StringBuilder();
-            string title = tournament.Name + " - Best in Factions";
-
-            string head = "<!DOCTYPE html><meta charset=\"UTF-8\"><html><head><title>" + title + "</title></head><body><h2>" + title + "</h2> <br />";
-            string hs = "<h3>";
-            string he = "</h3>";
-            string tb = "<table>"; //Table begin
-            string te = "</table>"; //Table end
-            string rb = "<tr>"; //Table row begin
-            string re = "</tr>"; //Table row end
-            string db = "<td>"; //Table data begin
-            string de = "</td>"; //Table data end
-            string end = "</body></html>";
-            string blank = "<br />";
-            string nl = Environment.NewLine;
-
-            if (bbcode)
-            {
-                head = "[b]" + title + "[/b]";
-                tb = "[table]";
-                te = "[/table]";
-                rb = "[tr]";
-                re = "[/tr]";
-                db = "[td]";
-                de = "[/td]";
-                blank = nl;
-                end = nl;
-            }
-
-            sb.Append(head);
-
-            string[] factions = tournament.Rule.Factions;
-
-            foreach (var f in factions)
-            {
-                sb.Append(blank);
-                sb.Append(WriteFaction(tournament, f, tb, te, rb, re, db, de, end, nl, hs, he, blank));
-            }
-
-            return sb.ToString();
+            head = "[b]" + title + "[/b]";
+            tb = "[table]";
+            te = "[/table]";
+            rb = "[tr]";
+            re = "[/tr]";
+            db = "[td]";
+            de = "[/td]";
+            blank = nl;
+            end = nl;
         }
 
-        private string WriteFaction(Tournament tournament
-            , string faction
-            , string tb
-            , string te
-            , string rb
-            , string re
-            , string db
-            , string de
-            , string end
-            , string nl,
-            string hs, string he, string blank)
+        sb.Append(head);
+
+        string[] factions = tournament.Rule.Factions;
+
+        foreach (var f in factions)
         {
-            StringBuilder sb = new StringBuilder();
+            sb.Append(blank);
+            sb.Append(WriteFaction(tournament, f, tb, te, rb, re, db, de, end, nl, hs, he, blank));
+        }
 
-            sb.Append(hs + "Best in " + faction + he);
-            //sb.Append(blank);
+        return sb.ToString();
+    }
 
-            //Tableheader
-            sb.Append(tb);
+    private string WriteFaction(Tournament tournament
+        , string faction
+        , string tb
+        , string te
+        , string rb
+        , string re
+        , string db
+        , string de
+        , string end
+        , string nl
+        , string hs
+        , string he
+        , string blank)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.Append(hs + "Best in " + faction + he);
+        //sb.Append(blank);
+
+        //Tableheader
+        sb.Append(tb);
+        sb.Append(rb);
+        sb.Append(db);
+        sb.Append(State.Text.RankShort); //Rank
+        sb.Append(de);
+        sb.Append(db);
+        sb.Append(State.Text.Name); //Displayname
+        sb.Append(de);
+        sb.Append(db);
+        sb.Append(State.Text.Team); //Team
+        sb.Append(de);
+        sb.Append(db);
+        sb.Append(State.Text.Faction); //Faction
+        sb.Append(de);
+        sb.Append(db);
+        sb.Append(State.Text.TournamentPointsShort); //Tournamentpoints
+        sb.Append(de);
+        sb.Append(db);
+        sb.Append(State.Text.WinsShort); //Wins
+        sb.Append(de);
+        if (tournament.Rule.OptionalFields.Contains(Literals.ModWins))
+        {
+            sb.Append(db);
+            sb.Append(State.Text.ModifiedWinsShort); //Modified Wins
+            sb.Append(de);
+        }
+
+        if (tournament.Rule.OptionalFields.Contains(Literals.Draws))
+        {
+            sb.Append(db);
+            sb.Append(State.Text.DrawsShort); //Draws
+            sb.Append(de);
+        }
+
+        if (tournament.Rule.OptionalFields.Contains(Literals.ModLoss))
+        {
+            sb.Append(db);
+            sb.Append(State.Text.ModifiedLossesShort); //Modified Loss
+            sb.Append(de);
+        }
+
+        sb.Append(db);
+        sb.Append(State.Text.Losses); //Losses
+        sb.Append(de);
+        if (tournament.Rule.OptionalFields.Contains(Literals.MoV))
+        {
+            sb.Append(db);
+            sb.Append(State.Text.MarginOfVictoryShort); //Margin of Victory
+            sb.Append(de);
+        }
+
+        sb.Append(db);
+        sb.Append(State.Text.StrengthOfScheduleShort); //Strength of Schedule
+        sb.Append(de);
+        if (tournament.Rule.OptionalFields.Contains(Literals.ESoS))
+        {
+            sb.Append(db);
+            sb.Append(State.Text.ExtendedStrengthOfScheduleShort); //extended Strength of Schedule
+            sb.Append(de);
+        }
+
+        sb.Append(re);
+        sb.Append(nl);
+
+        List<Player> participants = tournament.Participants.Where(x => x.Faction == faction).ToList();
+        List<Player> printList = new List<Player>();
+        for (int i = 0; i < participants.Count; i++)
+        {
+            printList.Add(new Player(participants[i]));
+            printList[i].Rank = i + 1;
+        }
+
+        foreach (Player p in participants)
+        {
             sb.Append(rb);
             sb.Append(db);
-            sb.Append("#"); //Rank
+            sb.Append(p.Rank); //Rank
             sb.Append(de);
             sb.Append(db);
-            sb.Append("Firstname"); //Firstname
+            sb.Append(p.Firstname); //Firstname
             sb.Append(de);
             sb.Append(db);
-            sb.Append("Nickname"); //Nickname
+            sb.Append(p.Nickname); //Nickname
             sb.Append(de);
             sb.Append(db);
-            sb.Append("Team"); //Team
+            sb.Append(p.Team); //Team
             sb.Append(de);
             sb.Append(db);
-            sb.Append("Faction"); //Faction
+            sb.Append(p.Faction); //Faction
             sb.Append(de);
             sb.Append(db);
-            sb.Append("TP"); //Tournamentpoints
+            sb.Append(p.TournamentPoints); //Tournamentpoints
             sb.Append(de);
             sb.Append(db);
-            sb.Append("W"); //Wins
+            sb.Append(p.Wins); //Wins
             sb.Append(de);
-            if (tournament.Rule.OptionalFields.Contains("ModWins"))
+            if (tournament.Rule.OptionalFields.Contains(Literals.ModWins))
             {
                 sb.Append(db);
-                sb.Append("MW"); //Modified Wins
+                sb.Append(p.ModifiedWins); //Modified Wins
                 sb.Append(de);
             }
-            if (tournament.Rule.OptionalFields.Contains("Draws"))
+
+            if (tournament.Rule.OptionalFields.Contains(Literals.Draws))
             {
                 sb.Append(db);
-                sb.Append("D"); //Draws
+                sb.Append(p.Draws); //Draws
                 sb.Append(de);
             }
-            if (tournament.Rule.OptionalFields.Contains("ModLoss"))
+
+            if (tournament.Rule.OptionalFields.Contains(Literals.ModLoss))
             {
                 sb.Append(db);
-                sb.Append("ML"); //Modified Loss
+                sb.Append(p.ModifiedLosses); //Modified Loss
                 sb.Append(de);
             }
+
             sb.Append(db);
-            sb.Append("L"); //Losses
+            sb.Append(p.Losses); //Losses
             sb.Append(de);
-            if (tournament.Rule.OptionalFields.Contains("MoV"))
+            if (tournament.Rule.OptionalFields.Contains(Literals.MoV))
             {
                 sb.Append(db);
-                sb.Append("MoV"); //Margin of Victory
+                sb.Append(p.MarginOfVictory); //Margin of Victory
                 sb.Append(de);
             }
+
             sb.Append(db);
-            sb.Append("SoS"); //Strength of Schedule
+            sb.Append(p.StrengthOfSchedule); //Strength of Schedule
             sb.Append(de);
-            if (tournament.Rule.OptionalFields.Contains("eSoS"))
+            if (tournament.Rule.OptionalFields.Contains(Literals.ESoS))
             {
                 sb.Append(db);
-                sb.Append("eSoS"); //extended Strength of Schedule
+                sb.Append(p.ExtendedStrengthOfSchedule); //extended Strength of Schedule
                 sb.Append(de);
             }
+
             sb.Append(re);
             sb.Append(nl);
-
-            List<Player> participants = tournament.Participants.Where(x => x.Faction == faction).ToList();
-            List<Player> printList = new List<Player>();
-            for (int i = 0; i < participants.Count; i++)
-            {
-                printList.Add(new Player(participants[i]));
-                printList[i].Rank = i + 1;
-            }
-
-             foreach (Player p in printList)
-            {
-                sb.Append(rb);
-                sb.Append(db);
-                sb.Append(p.Rank); //Rank
-                sb.Append(de);
-                sb.Append(db);
-                sb.Append(p.Firstname); //Firstname
-                sb.Append(de);
-                sb.Append(db);
-                sb.Append(p.Nickname); //Nickname
-                sb.Append(de);
-                sb.Append(db);
-                sb.Append(p.Team); //Team
-                sb.Append(de);
-                sb.Append(db);
-                sb.Append(p.Faction); //Faction
-                sb.Append(de);
-                sb.Append(db);
-                sb.Append(p.TournamentPoints); //Tournamentpoints
-                sb.Append(de);
-                sb.Append(db);
-                sb.Append(p.Wins); //Wins
-                sb.Append(de);
-                if (tournament.Rule.OptionalFields.Contains("ModWins"))
-                {
-                    sb.Append(db);
-                    sb.Append(p.ModifiedWins); //Modified Wins
-                    sb.Append(de);
-                }
-                if (tournament.Rule.OptionalFields.Contains("Draws"))
-                {
-                    sb.Append(db);
-                    sb.Append(p.Draws); //Draws
-                    sb.Append(de);
-                }
-                if (tournament.Rule.OptionalFields.Contains("ModLoss"))
-                {
-                    sb.Append(db);
-                    sb.Append(p.ModifiedLosses); //Modified Loss
-                    sb.Append(de);
-                }
-                sb.Append(db);
-                sb.Append(p.Losses); //Losses
-                sb.Append(de);
-                if (tournament.Rule.OptionalFields.Contains("MoV"))
-                {
-                    sb.Append(db);
-                    sb.Append(p.MarginOfVictory); //Margin of Victory
-                    sb.Append(de);
-                }
-                sb.Append(db);
-                sb.Append(p.StrengthOfSchedule); //Strength of Schedule
-                sb.Append(de);
-                if (tournament.Rule.OptionalFields.Contains("eSoS"))
-                {
-                    sb.Append(db);
-                    sb.Append(p.ExtendedStrengthOfSchedule); //extended Strength of Schedule
-                    sb.Append(de);
-                }
-                sb.Append(re);
-                sb.Append(nl);
-            }
-
-            sb.Append(te);
-
-            sb.Append(end);
-            return sb.ToString();
         }
 
+        sb.Append(te);
+
+        sb.Append(end);
+        return sb.ToString();
     }
+}

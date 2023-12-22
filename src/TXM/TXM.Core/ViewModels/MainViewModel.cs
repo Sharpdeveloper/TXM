@@ -39,6 +39,7 @@ public partial class MainViewModel : ObservableObject
 
     private bool IsShowTableExecutable => ActiveTournament?.Participants.Count > 0;
     private bool IsShowBestInFactionExecutable => ActiveTournament?.Participants.Count > 0;
+    private bool IsShowListsExecutable => ActiveTournament?.Participants.Count > 0;
     private bool IsGetBBCodeExecutable => ActiveTournament?.Participants.Count > 0;
     private bool IsNextRoundExecutable => ActiveTournament?.IsStarted == true && ActiveTournament?.IsSeeded == false;
     private bool IsStartCutExecutable => ActiveTournament?.IsStarted == true && ActiveTournament?.IsSeeded == false;
@@ -225,6 +226,9 @@ public partial class MainViewModel : ObservableObject
     
     [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
     private void PrintBestInFaction() => State.Controller.Print(DisplayItem.BestInFaction, true);
+    
+    [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
+    private void PrintLists() => State.Controller.Print(DisplayItem.Lists, true);
 
     [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
     private void PrintScoreSheet() => State.Controller.PrintScoreSheet();
@@ -291,6 +295,9 @@ public partial class MainViewModel : ObservableObject
     
     [RelayCommand(CanExecute = nameof(IsShowBestInFactionExecutable))]
     private void ShowBestInFaction() => State.Controller.ShowProjector(DisplayItem.BestInFaction);
+    
+    [RelayCommand(CanExecute = nameof(IsShowListsExecutable))]
+    private void ShowLists() => State.Controller.ShowProjector(DisplayItem.Lists);
 
     [RelayCommand(CanExecute = nameof(IsGetBBCodeExecutable))]
     private void GetBBCode() => State.Controller.GetBBCode();
@@ -382,6 +389,11 @@ public partial class MainViewModel : ObservableObject
         NextRoundCommand.NotifyCanExecuteChanged();
         GetResultsCommand.NotifyCanExecuteChanged();
         StartCutCommand.NotifyCanExecuteChanged();
+        ShowResultsCommand.NotifyCanExecuteChanged();
+        ShowBestInFactionCommand.NotifyCanExecuteChanged();
+        PrintBestInFactionCommand.NotifyCanExecuteChanged();
+        ShowListsCommand.NotifyCanExecuteChanged();
+        PrintListsCommand.NotifyCanExecuteChanged();
     }
 
     private void SetScenarios()
