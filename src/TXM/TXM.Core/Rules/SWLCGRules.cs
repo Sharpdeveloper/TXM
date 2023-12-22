@@ -40,7 +40,7 @@ namespace TXM.Core
 				newResult = new Result(1, 0, result.EnemyID, 1, result.WinnerID);
 			}
 
-            int tP = newResult.Destroyed;
+            var tP = newResult.WinnerID == -99 ? 0: newResult.Destroyed;
             TtournamentPoints = f.Invoke(0, tP);
             switch (tP)
             {

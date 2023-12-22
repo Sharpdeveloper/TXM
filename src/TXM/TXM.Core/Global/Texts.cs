@@ -34,6 +34,8 @@ public sealed class Texts
         Strings.Join(Literals.ImageEndings, " ,");
 
     public string BBCodeGenerator { get; set; } = "BBCode Generator";
+    public string BestInFaction { get; set; } = "Best in Faction";
+
     public string Cancel { get; set; } = "Cancel";
     public string CheckLanguages { get; set; } = "Check for new / updated Languages.";
     public string ChooseGame { get; set; } = "Choose the game:";
@@ -68,6 +70,8 @@ public sealed class Texts
     public string Date { get; set; } = "Date";
     public string Disqualified { get; set; } = "disqualified";
     public string Disqualify { get; set; } = "disqualify";
+    public string DoubleLoss { get; set; } = "DoubleLoss";
+    public string DoubleLossShort { get; set; } = "DL";
     public string Draws { get; set; } = "Draws";
     public string DrawsShort { get; set; } = "D";
     public string Drop { get; set; } = "drop";
@@ -142,6 +146,7 @@ public sealed class Texts
     public string MenuOpenAutoSaveFolder { get; set; } = "Open AutoSave Folder";
     public string MenuPlayerManagement { get; set; } = "Player Management";
     public string MenuPrint { get; set; } = "Print";
+    public string MenuPrintBestInFaction { get; set; } = "Print Best in Faction";
     public string MenuPrintPairingsWith { get; set; } = "Print Pairings (with Results)";
     public string MenuPrintPairingsWithout { get; set; } = "Print Pairings (without Results)";
     public string MenuPrintScoreSheets { get; set; } = "Print Score Sheet";
@@ -263,6 +268,8 @@ public sealed class Texts
     public string TimerSettingsPermanent { get; set; } = "Permanent Timer Settings:";
     public string TimerSettingsTemporary { get; set; } = "Temporary Timer Settings:";
     public string TimerTitle { get; set; } = "Timer";
+    public string TimerVisibility { get; set; } = "Should the Timer be visible?";
+    public string TimerVisibilityInfo { get; set; } = "This Settings sets, if the time will be shown on the projector window.";
     public string Tournament { get; set; } = "Tournament";
     public string TournamentName { get; set; } = "Tournament name:";
     public string TournamentNameInfo { get; set; } = "The name of the tournament.";

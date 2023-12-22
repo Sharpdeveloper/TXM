@@ -11,8 +11,8 @@ public sealed partial class Settings : ObservableObject
     #region Constants
     public const string FileExtension = "txmj";
     public const string FileExtensionsName = "TXM Tournaments";
-    public const string TxmVersion = "V4.0.0 Beta 1";
-    public const string CopyRightYear = "2014 - 2023";
+    public const string TxmVersion = "V4.0.0 Beta 2";
+    public const string CopyRightYear = "2014 - 2024";
     #endregion
 
     [ObservableProperty]
@@ -26,4 +26,7 @@ public sealed partial class Settings : ObservableObject
     
     [ObservableProperty]
     private string _language = Literals.LanguageDefault;
+
+    [ObservableProperty]
+    private bool _isTimerVisible = true;
 }

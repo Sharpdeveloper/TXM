@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 
+using TXM.Core.Enums;
 using TXM.Core.Interfaces;
 using TXM.Core.Logic;
 using TXM.Core.Models;
@@ -117,24 +118,33 @@ public class TournamentController
         }
     }
 
-    public string Print(bool print, bool pairings = false, bool results = false)
+    public string Print(DisplayItem displayItem, bool print = false)
     {
         string file = "";
-        if (!pairings && ActiveTournament != null)
+        if (displayItem == DisplayItem.Table && ActiveTournament != null)
         {
             file = State.Io.PrintPlayerList();
         }
-        else if (pairings)
+        else if (displayItem == DisplayItem.Pairings)
         {
-            file = State.Io.PrintPairings(results);
+            file = State.Io.PrintPairings(false);
+        }
+        else if (displayItem == DisplayItem.Results)
+        {
+            file = State.Io.PrintPairings(true);
+        }
+        else if (displayItem == DisplayItem.BestInFaction)
+        {
+            file = State.Io.PrintBestInFaction();
         }
 
         if (print)
         {
             var uri = "file://" + file;
-            var psi = new ProcessStartInfo();
-            psi.UseShellExecute = true;
-            psi.FileName = uri;
+            var psi = new ProcessStartInfo
+            {
+                UseShellExecute = true, FileName = uri
+            };
             Process.Start(psi);
         }
 
@@ -271,7 +281,7 @@ public class TournamentController
         return false;
     }
 
-    public void ShowProjector(bool table)
+    public void ShowProjector(DisplayItem displayItem)
     {
         if (!_openWindows.ContainsKey(Literals.Projector))
         {
@@ -281,22 +291,21 @@ public class TournamentController
         var window = _openWindows.First(x => x.Key == Literals.Projector).Value;
         var pvm = window.DataContext as ProjectorViewModel;
 
-        var file = "";
-        var title = "";
-        if (table)
+        var file = Print(displayItem);
+        var title = $"{ActiveTournament.Name} - {State.Text.Standings}";
+        if (displayItem is DisplayItem.Pairings or DisplayItem.Results)
         {
-            file = Print(false);
-            title = $"{ActiveTournament.Name} - {State.Text.Standings}";
-        }
-        else
-        {
-            file = Print(false, true);
             title = $"{ActiveTournament.Name} - {State.Text.Pairings}";
+        }
+        else if (displayItem == DisplayItem.BestInFaction)
+        {
+            title = $"{ActiveTournament.Name} - {State.Text.BestInFaction}";
         }
 
         pvm.Path = file;
         pvm.Title = title;
         pvm.Timer = State.Timer;
+        pvm.TimerVisibility = State.Setting.IsTimerVisible;
     }
 
     public void Close()
@@ -383,6 +392,7 @@ public class TournamentController
             State.Timer.DefaultTime = svm.Time;
             State.Timer.StartHour = svm.StartingHour;
             State.Timer.StartMinute = svm.StartingHour;
+            State.Setting.IsTimerVisible = svm.IsTimerVisible;
             State.Io.SaveSettings();
             if (oldLang != State.Setting.Language)
             {

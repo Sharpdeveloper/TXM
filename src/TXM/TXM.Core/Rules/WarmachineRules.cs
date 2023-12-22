@@ -52,7 +52,7 @@ namespace TXM.Core
 				newResult = new Result((int) result.MaxPoints, 0, result.Enemy, result.MaxPoints, result.WinnerID);
 			}*/
 
-            int tP = newResult.Destroyed - newResult.Lost;
+            var tP = newResult.WinnerID == -99 ? 0 : newResult.Destroyed - newResult.Lost;
 
             //TdestroyedPoints = f.Invoke(0, newResult.Destroyed);
             //TlostPoints = f.Invoke(0, newResult.Lost);

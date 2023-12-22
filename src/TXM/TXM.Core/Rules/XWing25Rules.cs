@@ -54,7 +54,7 @@ namespace TXM.Core
                 newResult = new Result((int)(0.9 * result.MaxPoints), 0, result.EnemyID, result.MaxPoints, result.WinnerID);
             }
 
-            int tP = newResult.Destroyed - newResult.Lost;
+            var tP = newResult.WinnerID == -99 ? -1 : newResult.Destroyed - newResult.Lost;
             if (tP > 0)
             {
                 tP = 3;
@@ -90,7 +90,7 @@ namespace TXM.Core
 
         public override ObservableCollection<Player> SortTable(ObservableCollection<Player> unsorted)
         {
-            var t = unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.StrengthOfSchedule).ThenBy(x => x.MarginOfVictory).ThenBy(x => x.Order).ToList();
+            var t = unsorted.OrderByDescending(x => x.TournamentPoints).ThenByDescending(x => x.StrengthOfSchedule).ThenByDescending(x => x.MarginOfVictory).ThenBy(x => x.Order).ToList();
 
             for (int i = 0; i < t.Count; i++)
                 t[i].Rank = i + 1;

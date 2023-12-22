@@ -45,7 +45,7 @@ namespace TXM.Core
                 newResult = new Result(1, 0, result.EnemyID, 1, result.WinnerID);
             }
 
-            int tP = newResult.Destroyed - newResult.Lost;
+            var tP = newResult.WinnerID == -99 ? -1 : newResult.Destroyed - newResult.Lost;
 			if (tP > 0)
 			{
 				tP = 1;

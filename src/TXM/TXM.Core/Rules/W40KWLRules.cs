@@ -56,7 +56,7 @@ namespace TXM.Core
 				newResult = new Result((int)0.5 * result.MaxPoints, 0, result.EnemyID, result.MaxPoints, result.WinnerID, 15);
 			}
 
-            int tP = newResult.TournamentPoints;
+            var tP = newResult.WinnerID == -99 ? 0 : newResult.TournamentPoints;
 
 			TmarginOfVictory = f.Invoke(0, (newResult.Destroyed - newResult.Lost));
 			TdestroyedPoints = f.Invoke(0, newResult.Destroyed);

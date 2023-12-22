@@ -65,6 +65,8 @@
                                       Command="{Binding PrintPairingWithResultCommand}" />
                             <MenuItem Header="{Binding Text.MenuPrintScoreSheets}"
                                       Command="{Binding PrintScoreSheetCommand}" />
+                            <MenuItem Header="{Binding Text.MenuPrintBestInFaction}"
+                                      Command="{Binding PrintBestInFactionCommand}" />
                         </MenuItem>
                         <MenuItem Header="{Binding Text.MenuSettings}" Command="{Binding ShowSettingsCommand}" />
                         <MenuItem Header="{Binding Text.MenuExit}" Click="Close_Click" />
@@ -94,6 +96,8 @@
                     <MenuItem Header="{Binding Text.MenuView}">
                         <MenuItem Header="{Binding Text.MenuShowPairings}" Command="{Binding ShowPairingsCommand}" />
                         <MenuItem Header="{Binding Text.MenuShowTable}" Command="{Binding ShowTableCommand}" />
+                        <MenuItem Header="{Binding Text.MenuShowResults}" Command="{Binding ShowResultsCommand}" />
+                        <MenuItem Header="{Binding Text.MenuShowBestInFaction}" Command="{Binding ShowBestInFactionCommand}" />
                         <MenuItem Header="{Binding Text.MenuBBCODE}" Command="{Binding GetBBCodeCommand}" />
                     </MenuItem>
                     <MenuItem Header="{Binding Text.MenuTools}">
@@ -660,6 +664,23 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <DataGridCheckBoxColumn
+                                    Binding="{Binding IsDoubleLoss}"
+                                    IsReadOnly="False">
+                                    <DataGridCheckBoxColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=DataContext.Text.DoubleLossShort}" />
+                                        </DataTemplate>
+                                    </DataGridCheckBoxColumn.HeaderTemplate>
+                                    <DataGridCheckBoxColumn.HeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="ToolTip"
+                                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=DataContext.Text.DoubleLoss}" />
+                                            <Setter Property="Cursor" Value="Help" />
+                                        </Style>
+                                    </DataGridCheckBoxColumn.HeaderStyle>
+                                </DataGridCheckBoxColumn>
                                 <DataGridCheckBoxColumn
                                     Binding="{Binding IsResultEdited}"
                                     IsReadOnly="False">

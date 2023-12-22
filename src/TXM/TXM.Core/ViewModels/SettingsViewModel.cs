@@ -65,6 +65,9 @@ public partial class SettingsViewModel : ObservableValidator
     [ObservableProperty]
     private string _checkLanguageText;
 
+    [ObservableProperty]
+    private bool _isTimerVisible;
+    
     [RelayCommand]
     private void SelectImageFile()
     {

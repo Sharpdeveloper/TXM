@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using TXM.Core.Enums;
 using TXM.Core.Global;
 using TXM.Core.Logic;
 using TXM.Core.Models;
@@ -32,8 +33,12 @@ public partial class MainViewModel : ObservableObject
 
     private bool IsShowPairingsExecutable =>
         ActiveTournament?.Rounds.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
+    
+    private bool IsShowResultsExecutable =>
+        ActiveTournament?.Rounds.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
 
     private bool IsShowTableExecutable => ActiveTournament?.Participants.Count > 0;
+    private bool IsShowBestInFactionExecutable => ActiveTournament?.Participants.Count > 0;
     private bool IsGetBBCodeExecutable => ActiveTournament?.Participants.Count > 0;
     private bool IsNextRoundExecutable => ActiveTournament?.IsStarted == true && ActiveTournament?.IsSeeded == false;
     private bool IsStartCutExecutable => ActiveTournament?.IsStarted == true && ActiveTournament?.IsSeeded == false;
@@ -210,13 +215,16 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
-    private void PrintTable() => State.Controller.Print(true);
+    private void PrintTable() => State.Controller.Print(DisplayItem.Table, true);
 
     [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
-    private void PrintPairingWithout() => State.Controller.Print(true, true);
+    private void PrintPairingWithout() => State.Controller.Print(DisplayItem.Pairings, true);
 
     [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
-    private void PrintPairingWithResult() => State.Controller.Print(true, true, true);
+    private void PrintPairingWithResult() => State.Controller.Print(DisplayItem.Results, true);
+    
+    [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
+    private void PrintBestInFaction() => State.Controller.Print(DisplayItem.BestInFaction, true);
 
     [RelayCommand(CanExecute = nameof(IsPrintExecutable))]
     private void PrintScoreSheet() => State.Controller.PrintScoreSheet();
@@ -273,10 +281,16 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(IsShowPairingsExecutable))]
-    private void ShowPairings() => State.Controller.ShowProjector(false);
+    private void ShowPairings() => State.Controller.ShowProjector(DisplayItem.Pairings);
 
     [RelayCommand(CanExecute = nameof(IsShowTableExecutable))]
-    private void ShowTable() => State.Controller.ShowProjector(true);
+    private void ShowTable() => State.Controller.ShowProjector(DisplayItem.Table);
+    
+    [RelayCommand(CanExecute = nameof(IsShowResultsExecutable))]
+    private void ShowResults() => State.Controller.ShowProjector(DisplayItem.Results);
+    
+    [RelayCommand(CanExecute = nameof(IsShowBestInFactionExecutable))]
+    private void ShowBestInFaction() => State.Controller.ShowProjector(DisplayItem.BestInFaction);
 
     [RelayCommand(CanExecute = nameof(IsGetBBCodeExecutable))]
     private void GetBBCode() => State.Controller.GetBBCode();

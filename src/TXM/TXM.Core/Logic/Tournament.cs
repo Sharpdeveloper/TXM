@@ -395,6 +395,10 @@ public partial class Tournament : ObservableObject
             {
                 winnerID = pairing.Player2ID;
             }
+            else if (pairing.IsDoubleLoss)
+            {
+                winnerID = -99;
+            }
             else
             {
                 winnerID = (pairing.Player1Score > pairing.Player2Score)

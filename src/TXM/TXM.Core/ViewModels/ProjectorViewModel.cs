@@ -12,4 +12,7 @@ public partial class ProjectorViewModel : ObservableObject
 
     [ObservableProperty]
     private string _title;
+
+    [ObservableProperty]
+    private bool _timerVisibility;
 }

@@ -19,49 +19,52 @@ public partial class Pairing : ObservableObject
     #endregion
 
     [ObservableProperty]
-    public List<string> winners = new List<string>();
+    private List<string> _winners = new List<string>();
 
     #region Properties
     [ObservableProperty]
-    public int tableNo;
+    public int _tableNo;
 
     [ObservableProperty]
-    public int player1ID;
+    private int _player1ID;
 
     [ObservableProperty]
-    public int player2ID;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsHidden))]
-    public int player1Score;
+    private int _player2ID;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHidden))]
-    public int player2Score;
+    private int _player1Score;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHidden))]
-    public string winner;
+    private int _player2Score;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHidden))]
-    public bool isResultEdited;
-
-    [ObservableProperty]
-    public int player1Points;
-
-    [ObservableProperty]
-    public int player2Points;
-
-    [ObservableProperty]
-    public string player1Name;
-
-    [ObservableProperty]
-    public string player2Name;
+    private string _winner;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHidden))]
-    public bool isLocked;
+    private bool _isResultEdited;
+
+    [ObservableProperty]
+    private int _player1Points;
+
+    [ObservableProperty]
+    private int _player2Points;
+
+    [ObservableProperty]
+    private string _player1Name;
+
+    [ObservableProperty]
+    private string _player2Name;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsHidden))]
+    private bool _isLocked;
+
+    [ObservableProperty]
+    private bool _isDoubleLoss;
 
     public bool IsHidden
     {
@@ -135,6 +138,7 @@ public partial class Pairing : ObservableObject
         IsLocked = p.IsLocked;
         Player1Name = p.Player1Name;
         Player2Name = p.Player2Name;
+        IsDoubleLoss = p.IsDoubleLoss;
     }
     #endregion
 }
