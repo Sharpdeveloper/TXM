@@ -89,7 +89,7 @@ public partial class Player : ObservableObject
     public string city;
 
     [ObservableProperty]
-    public string squadList;
+    public string? squadList;
 
     [ObservableProperty]
     public bool isDisqualified;

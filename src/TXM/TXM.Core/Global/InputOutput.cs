@@ -19,7 +19,7 @@ public sealed class InputOutput
         AutosavePath = Path.Combine(SavePath, "Autosave");
         LanguagePath = Path.Combine(SavePath, "Languages");
         TempPath = Path.Combine(SavePath, "Temp");
-        PrintFile = Path.Combine(TempPath, "print.html");
+        PrintFile = Path.Combine(TempPath, "index.html");
         SettingsFile = Path.Combine(SavePath, "settings.json");
         options = new JsonSerializerOptions { WriteIndented = true };
     }
@@ -497,7 +497,7 @@ public sealed class InputOutput
 
         var participants = tournament.Participants;
 
-        foreach (Player p in participants)
+        foreach (var p in participants)
         {
             sb.Append(rb);
             sb.Append(db);
@@ -564,7 +564,11 @@ public sealed class InputOutput
             if (lists)
             {
                 sb.Append(db);
-                if (p.SquadList.Contains("http"))
+                if (p.SquadList == null)
+                {
+                    sb.Append("");
+                }
+                else if (p.SquadList.Contains("http"))
                 {
                     sb.Append(ab1);
                     sb.Append(p.SquadList);
@@ -1262,7 +1266,14 @@ public sealed class InputOutput
 
         sb.Append(head);
 
-        string[] factions = tournament.Rule.Factions;
+        List<string> factions = new();
+        foreach (var p in tournament.Participants)
+        {
+            if (!factions.Contains(p.Faction))
+            {
+                factions.Add(p.Faction);
+            }
+        }
 
         foreach (var f in factions)
         {

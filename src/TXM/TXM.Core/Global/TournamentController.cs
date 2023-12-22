@@ -249,6 +249,7 @@ public class TournamentController
             player.HasPaid = result.player.HasPaid;
             player.TableNo = result.player.TableNo;
             player.IsPresent = result.player.IsPresent;
+            player.Faction = result.player.Faction;
         }
     }
 

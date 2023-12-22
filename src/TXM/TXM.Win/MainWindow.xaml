@@ -189,7 +189,8 @@
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                       ItemsSource="{Binding ActiveTournament.Participants}"
-                      SelectedItem="{Binding SelectedPlayer}">
+                      SelectedItem="{Binding SelectedPlayer}"
+                      PreviewKeyDown="DataGridPlayer_OnPreviewKeyDown">
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Binding="{Binding Rank}"

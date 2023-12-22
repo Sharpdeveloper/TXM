@@ -65,5 +65,13 @@ namespace TXM.Win
             catch (ArgumentOutOfRangeException) { }
             catch (ArgumentNullException) { }
         }
+        
+        private void DataGridPlayer_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                RemovePlayer_Click(sender, e);
+            }
+        }
     }
 }
