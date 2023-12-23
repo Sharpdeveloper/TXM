@@ -250,6 +250,8 @@ public class TournamentController
             player.TableNo = result.player.TableNo;
             player.IsPresent = result.player.IsPresent;
             player.Faction = result.player.Faction;
+            player.Nickname = result.player.Nickname;
+            player.SquadList = result.player.SquadList;
         }
     }
 

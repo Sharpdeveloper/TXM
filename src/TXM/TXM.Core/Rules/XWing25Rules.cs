@@ -85,7 +85,7 @@ namespace TXM.Core
                     break;
             }
 
-            return tP == 1;
+            return tP == 3;
         }
 
         public override ObservableCollection<Player> SortTable(ObservableCollection<Player> unsorted)

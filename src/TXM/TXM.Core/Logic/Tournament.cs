@@ -368,7 +368,7 @@ public partial class Tournament : ObservableObject
 
         foreach (var pairing in results)
         {
-            var player1 = Enumerable.First<Player>(Participants, x => x.ID == pairing.Player1ID);
+            var player1 = Participants.First(x => x.ID == pairing.Player1ID);
             Player player2;
             if (pairing.Player2ID == Player.Bye.ID)
             {
@@ -384,7 +384,7 @@ public partial class Tournament : ObservableObject
             }
             else
             {
-                player2 = Enumerable.First<Player>(Participants, x => x.ID == pairing.Player2ID);
+                player2 = Participants.First(x => x.ID == pairing.Player2ID);
             }
             Result diffResult;
             if (pairing.Winner == State.Text.Player1)
@@ -421,7 +421,7 @@ public partial class Tournament : ObservableObject
                 winner = Rule.AddResult(player1, r);
                 if (winner)
                 {
-                    WinnerLastRound.Add(Enumerable.First<Player>(Participants, x => x.ID == pairing.Player1ID));
+                    WinnerLastRound.Add(Participants.First(x => x.ID == pairing.Player1ID));
                 }
             }
 
@@ -442,7 +442,7 @@ public partial class Tournament : ObservableObject
                     winner = Rule.AddResult(player2, r);
                     if (winner)
                     {
-                        WinnerLastRound.Add(Enumerable.First<Player>(Participants, x => x.ID == pairing.Player2ID));
+                        WinnerLastRound.Add(Participants.First(x => x.ID == pairing.Player2ID));
                     }
                 }
             }
