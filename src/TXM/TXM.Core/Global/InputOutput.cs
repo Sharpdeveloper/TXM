@@ -369,7 +369,7 @@ public sealed class InputOutput
                     city = p.City;
                 }
 
-                line = p.T3ID + sep + p.Firstname + sep + lastname + sep + p.Nickname + sep + p.Faction + sep + city +
+                line = p.T3Id + sep + p.Firstname + sep + lastname + sep + p.Nickname + sep + p.Faction + sep + city +
                        sep + p.Team + sep + p.Rank + sep + (p.TournamentPoints + p.ArmyRank) + sep +
                        p.TournamentPoints + sep + p.MarginOfVictory + sep + p.ArmyRank + rest;
                 temp.Add(p.Nickname);
@@ -1176,7 +1176,7 @@ public sealed class InputOutput
             sepBegin = sepEnd + 2;
         }
 
-        return new Models.Player(Int32.Parse(splitedLine[0]), splitedLine[1], splitedLine[2], splitedLine[3]
+        return new Player(Int32.Parse(splitedLine[0]), splitedLine[1], splitedLine[2], splitedLine[3]
             , splitedLine[4],
             splitedLine[5], splitedLine[6], Int32.Parse(splitedLine[9]) == 1, Int32.Parse(splitedLine[7]) == 3);
     }

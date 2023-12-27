@@ -108,7 +108,7 @@ public partial class Tournament : ObservableObject
         , int maxPoints = 0
         , int cut = 0)
     {
-        Player.ResetID();
+        Player.ResetId();
         Name = name;
         T3ID = t3ID;
         GOEPPVersion = GOEPPversion;
@@ -263,6 +263,13 @@ public partial class Tournament : ObservableObject
         {
             player.Name += $" <{State.Text.Disqualified}>";
         }
+
+        foreach (var p in Participants)
+        {
+            p.NewRandom();
+        }
+        
+        Sort();
     }
 
     /// <summary>
@@ -298,6 +305,17 @@ public partial class Tournament : ObservableObject
         {
             currentCutSize = (int)Math.Ceiling(Math.Log2(CutSize));
             int margin = 0;
+            var byes = CalculateWonBye();
+            if (byes > 0)
+            {
+                foreach (var p in Participants)
+                {
+                    p.NewRandom();
+                }
+            }
+
+            Sort();
+            
             for (int i = 0; i > CutSize; i++)
             {
                 for (int j = margin; j > Participants.Count; j++)
@@ -305,6 +323,7 @@ public partial class Tournament : ObservableObject
                     var p = Participants[i + j];
                     if (!(p.HasDropped || p.IsDisqualified))
                     {
+                        p.IsInCut = true;
                         cutPlayer.Add(p);
                         margin = j;
                         break;
@@ -323,10 +342,6 @@ public partial class Tournament : ObservableObject
         else
         {
             currentCutSize /= 2;
-            foreach (var player in winnerLastRound)
-            {
-                cutPlayer.Add(player);
-            }
         }
 
         for (var i = 0; i < (currentCutSize / 2); i++)
@@ -448,14 +463,27 @@ public partial class Tournament : ObservableObject
             }
         }
 
-        foreach (var player in Participants)
+        //-1 means the cut didn't start yet
+        if(currentCutSize == -1)
         {
-            CalculateStrengthOfSchedule(player);
-        }
+            foreach (var player in Participants)
+            {
+                CalculateStrengthOfSchedule(player);
+            }
 
-        foreach (var player in Participants)
+            foreach (var player in Participants)
+            {
+                CalculateExtendedStrengthOfSchedule(player);
+            }
+        }
+        else
         {
-            CalculateExtendedStrengthOfSchedule(player);
+            var inCut = Participants.Where(x => x.IsInCut == true).ToList();
+            //Remove IsInCut-flag from player who lost last round 
+            foreach (var ic in inCut.Where(ic => !WinnerLastRound.Contains(ic)))
+            {
+                ic.IsInCut = false;
+            }
         }
 
         Sort();
@@ -477,8 +505,10 @@ public partial class Tournament : ObservableObject
     /// <summary>
     /// THe WonBye gets calculated by treaten them as the strongest unplayed opponent
     /// </summary>
-    public void CalculateWonBye()
+    /// <returns>how many won byes were calculated</returns>
+    public int CalculateWonBye()
     {
+        var byes = 0;
         if (!WonByeCalculated)
         {
             foreach (var player in Participants)
@@ -486,6 +516,7 @@ public partial class Tournament : ObservableObject
                 if (player.HasWonBye)
                 {
                     player.Enemies.Add(new Enemy(GetStrongestUnplayedEnemy(player).ID, true));
+                    byes++;
                 }
             }
         }
@@ -501,6 +532,8 @@ public partial class Tournament : ObservableObject
         }
 
         WonByeCalculated = true;
+
+        return byes;
     }
 
     /// <summary>
@@ -676,7 +709,7 @@ public partial class Tournament : ObservableObject
                 {
                     temp = random?.Next(0, PointGroup[i].Count) ?? 0;
                     while (Enumerable.First<Player>(Participants, x => x.ID == Pairings[^1].Player1ID)
-                           .HasPlayedVS(PointGroup[group][temp].ID))
+                           .HasPlayedVs(PointGroup[group][temp].ID))
                     {
                         temp = random?.Next(0, PointGroup[i].Count) ?? temp + 1;
                     }
@@ -717,13 +750,13 @@ public partial class Tournament : ObservableObject
             Player enemyP1 = new Player("enemyP1"), enemyP2 = new Player("enemyP2");
             int pairingsNo = -1;
 
-            if (p1.HasPlayedVS(Pairings[^1].Player2ID) &&
+            if (p1.HasPlayedVs(Pairings[^1].Player2ID) &&
                 p1.Enemies.Count < Participants.Count)
             {
                 for (int i = Pairings.Count - 2; i >= 0; i--)
                 {
-                    if (!p1.HasPlayedVS(Pairings[i].Player1ID) &&
-                        !p2.HasPlayedVS(Pairings[i].Player2ID))
+                    if (!p1.HasPlayedVs(Pairings[i].Player1ID) &&
+                        !p2.HasPlayedVs(Pairings[i].Player2ID))
                     {
                         pairingsNo = i;
                         enemyP1 = Enumerable.First<Player>(Participants, x => x.ID == Pairings[i].Player1ID);
@@ -731,8 +764,8 @@ public partial class Tournament : ObservableObject
                         break;
                     }
 
-                    if (!p1.HasPlayedVS(Pairings[i].Player2ID) &&
-                        !p2.HasPlayedVS(Pairings[i].Player1ID))
+                    if (!p1.HasPlayedVs(Pairings[i].Player2ID) &&
+                        !p2.HasPlayedVs(Pairings[i].Player1ID))
                     {
                         pairingsNo = i;
                         enemyP1 = Enumerable.First<Player>(Participants, x => x.ID == Pairings[i].Player2ID);
@@ -844,7 +877,7 @@ public partial class Tournament : ObservableObject
         for (int i = 0; i < pointGroup.Count; i++)
         {
             var enemy = pointGroup[i];
-            if (!Player.HasPlayedVS(enemy.ID) && !Player.Equals(enemy))
+            if (!Player.HasPlayedVs(enemy.ID) && !Player.Equals(enemy))
             {
                 return false;
             }
@@ -860,7 +893,7 @@ public partial class Tournament : ObservableObject
     /// <returns>Returns the strongest opponnent</returns>
     private Player GetStrongestUnplayedEnemy(Player player)
     {
-        return Enumerable.First<Player>(Participants, opponent => player.ID != opponent.ID && !player.HasPlayedVS(opponent.ID));
+        return Enumerable.First<Player>(Participants, opponent => player.ID != opponent.ID && !player.HasPlayedVs(opponent.ID));
     }
 
     /// <summary>

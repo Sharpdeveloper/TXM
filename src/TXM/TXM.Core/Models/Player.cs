@@ -1,184 +1,153 @@
-﻿using System.Text.Json.Serialization;
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace TXM.Core.Models;
 
 public partial class Player : ObservableObject
 {
     #region static
-    internal static int currentID = 1;
 
-    private static Player? bye = null;
-    public static Player Bye
-    {
-        get
-        {
-            if (bye == null)
-            {
-                bye = new Player("Bye")
-                {
-                    ID = -1
-                };
-            }
-            return bye;
-        }
-    }
+    private static int _currentId = 1;
 
-    private static Player? wonBye = null;
-    public static Player WonBye
-    {
-        get
+    private static Player? _bye;
+    public static Player Bye =>
+        _bye ??= new Player("Bye")
         {
-            if(wonBye == null)
-            {
-                wonBye = new Player("WonBye")
-                {
-                    ID = -2
-                };
-            }
-            return wonBye;
-        }
-    }
+            ID = -1
+        };
 
-    private static Player? bonus = null;
-    public static Player Bonus
-    {
-        get
+    private static Player? _wonBye;
+    public static Player WonBye =>
+        _wonBye ??= new Player("WonBye")
         {
-            if (bonus == null)
-            {
-                bonus = new Player("Bonus")
-                {
-                    ID = -3
-                };
-            }
-            return bonus;
-        }
-    }
+            ID = -2
+        };
+
+    private static Player? _bonus;
+    public static Player Bonus =>
+        _bonus ??= new Player("Bonus")
+        {
+            ID = -3
+        };
 
     /// <summary>
     /// Resets the internal player ID which is used to give each player an unique ID
     /// </summary>
-    public static void ResetID()
+    public static void ResetId()
     {
-        currentID = 0;
+        _currentId = 0;
     }
     #endregion
 
     #region Player Information
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayName))]
-    public string name;
+    private string? _name;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayName))]
-    public string firstname;
+    private string? _firstname;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayName))]
-    public string nickname;
+    private string? _nickname;
 
     [ObservableProperty]
-    public int tableNo;
+    private int _tableNo;
 
     [ObservableProperty]
-    public string team;
+    private string? _team;
 
     [ObservableProperty]
-    public string city;
+    private string? _city;
 
     [ObservableProperty]
-    public string? squadList;
+    private string? _squadList;
 
     [ObservableProperty]
-    public bool isDisqualified;
+    private bool _isDisqualified;
 
     [ObservableProperty]
-    public bool hasDropped;
+    private bool _hasDropped;
 
     [ObservableProperty]
-    public bool isPresent;
+    private bool _isPresent;
 
-    [JsonIgnore]
-    public int Order
-    {
-        get
-        {
-            return new Random().Next(0, 99999);
-        }
-    }
+    [ObservableProperty]
+    private int _order;
     #endregion
 
     #region Game Infomation
     [ObservableProperty]
-    public int iD;
+    private int _iD;
 
     [ObservableProperty]
-    public int wins;
+    private int _wins;
 
     [ObservableProperty]
-    public int modifiedWins;
+    private int _modifiedWins;
 
     [ObservableProperty]
-    public int losses;
+    private int _losses;
 
     [ObservableProperty]
-    public int modifiedLosses;
+    private int _modifiedLosses;
 
     [ObservableProperty]
-    public int draws;
+    private int _draws;
 
     [ObservableProperty]
-    public int tournamentPoints;
+    private int _tournamentPoints;
 
     [ObservableProperty]
-    public int destroyedPoints;
+    private int _destroyedPoints;
 
     [ObservableProperty]
-    public int lostPoints;
+    private int _lostPoints;
 
     [ObservableProperty]
-    public double strengthOfSchedule;
+    private double _strengthOfSchedule;
 
     [ObservableProperty]
-    public double extendedStrengthOfSchedule;
+    private double _extendedStrengthOfSchedule;
 
     [ObservableProperty]
-    public int marginOfVictory;
+    private int _marginOfVictory;
 
     [ObservableProperty]
-    public string faction;
+    private string? _faction;
 
-    public List<Result> Results { get; set; }
+    [ObservableProperty]
+    private bool _isInCut;
+
+    public List<Result>? Results { get; set; }
     #endregion
 
     #region Tournament Information
-    public List<Enemy> Enemies { get; set; }
+    public List<Enemy>? Enemies { get; set; }
 
     [ObservableProperty]
-    public bool hasBye;
+    private bool _hasBye;
 
     [ObservableProperty]
-    public bool isPaired;
+    private bool _isPaired;
 
     [ObservableProperty]
-    public bool hasWonBye;
+    private bool _hasWonBye;
     #endregion
 
     #region T3 Information
-    public int T3ID { get; private set; }
+    public int T3Id { get; private set; }
 
     [ObservableProperty]
-    public int rank;
+    private int _rank;
 
     public int ArmyRank { get; set; }
 
     [ObservableProperty]
-    public bool hasPaid;
+    private bool _hasPaid;
 
     [ObservableProperty]
-    public bool hasListGiven;
+    private bool _hasListGiven;
     #endregion
 
     #region Derived Information
@@ -192,7 +161,14 @@ public partial class Player : ObservableObject
             }
             else
             {
-                return Firstname + " " + Name.ToCharArray()[0] + ".";
+                if (Name != null)
+                {
+                    return Firstname + " " + Name.ToCharArray()[0] + ".";
+                }
+                else
+                {
+                    return Firstname!;
+                }
             }
         }
     }
@@ -200,12 +176,46 @@ public partial class Player : ObservableObject
 
     #region Constructors
     //Copy Constructor
-    public Player(Player p) : this(p.Name, p.Firstname, p.Nickname, p.Team, p.City, p.Wins, p.ModifiedWins, p.Losses, p.Draws, p.TournamentPoints, p.DestroyedPoints, p.LostPoints, p.StrengthOfSchedule, p.MarginOfVictory, p.Faction, p.HasBye, p.IsPaired, p.HasWonBye, p.T3ID, p.Rank, p.ArmyRank, p.HasPaid, p.HasListGiven, p.ID)
+    public Player(Player p)
     {
-
+        Name = p.Name;
+        Firstname = p.Firstname;
+        Nickname = p.Nickname;
+        TableNo = p.TableNo;
+        Team = p.Team;
+        City = p.City;
+        SquadList = p.SquadList;
+        IsDisqualified = p.IsDisqualified;
+        HasDropped = p.HasDropped;
+        IsPresent = p.IsPresent;
+        Order = p.Order;
+        ID = p.ID;
+        Wins = p.Wins;
+        ModifiedWins = p.ModifiedWins;
+        Losses = p.Losses;
+        ModifiedLosses = p.ModifiedLosses;
+        Draws = p.Draws;
+        TournamentPoints = p.TournamentPoints;
+        DestroyedPoints = p.DestroyedPoints;
+        LostPoints = p.LostPoints;
+        StrengthOfSchedule = p.StrengthOfSchedule;
+        ExtendedStrengthOfSchedule = p.ExtendedStrengthOfSchedule;
+        MarginOfVictory = p.MarginOfVictory;
+        Faction = p.Faction;
+        IsInCut = p.IsInCut;
+        HasBye = p.HasBye;
+        IsPaired = p.IsPaired;
+        HasWonBye = p.HasWonBye;
+        Rank = p.Rank;
+        HasPaid = p.HasPaid;
+        HasListGiven = p.HasListGiven;
+        Results = p.Results;
+        Enemies = p.Enemies;
+        T3Id = p.T3Id;
+        ArmyRank = p.ArmyRank;
     }
 
-    public Player(string name, string firstname, string nickname, string team, string city, int wins, int modifiedWins, int looses, int draws, int points, int pointsDestroyed, int pointsLost, double strengthOfSchedule, int marginOfVictory, string faction, bool hasBye, bool isPaired, bool hasWonBye, int t3ID, int rank, int armyRank, bool hasPaid, bool hasListGiven, int nr = -1)
+    public Player(string name, string firstname, string nickname, string team, string city, int wins, int modifiedWins, int looses, int draws, int points, int pointsDestroyed, int pointsLost, double strengthOfSchedule, int marginOfVictory, string faction, bool hasBye, bool isPaired, bool hasWonBye, int t3Id, int rank, int armyRank, bool hasPaid, bool hasListGiven, int nr = -1)
     {
         Name = name;
         Firstname = firstname;
@@ -225,14 +235,15 @@ public partial class Player : ObservableObject
         HasBye = hasBye;
         IsPaired = isPaired;
         HasWonBye = hasWonBye;
-        T3ID = t3ID;
+        HasBye = hasBye;
+        T3Id = t3Id;
         Rank = rank;
         ArmyRank = armyRank;
         HasPaid = hasPaid;
         HasListGiven = hasListGiven;
         if (nr == -1)
         {
-            ID = ++currentID;
+            ID = ++_currentId;
         }
         else
         {
@@ -243,8 +254,8 @@ public partial class Player : ObservableObject
         Results = new List<Result>();
     }
 
-    public Player(int t3ID, string firstname, string name, string nickname, string faction, string city, string team, bool payed, bool armylistgiven)
-        : this(name, firstname, nickname, team, city, 0, 0, 0, 0, 0, 0, 0, 0, 0, faction, false, false, false, t3ID, 0, 0, payed, armylistgiven)
+    public Player(int t3Id, string firstname, string name, string nickname, string faction, string city, string team, bool payed, bool armyListGiven)
+        : this(name, firstname, nickname, team, city, 0, 0, 0, 0, 0, 0, 0, 0, 0, faction, false, false, false, t3Id, 0, 0, payed, armyListGiven)
     { }
 
 
@@ -257,9 +268,9 @@ public partial class Player : ObservableObject
     /// <summary>
     /// Checks if the player has played vs this Enemy
     /// </summary>
-    /// <param name="enemyID">The Player.ID of the Enemy</param>
+    /// <param name="enemyId">The Player.ID of the Enemy</param>
     /// <returns>Returns true if the player has played against this Enemy. Otherwise false.</returns>
-    internal bool HasPlayedVS(int enemyID)
+    internal bool HasPlayedVs(int enemyId)
     {
         if (Enemies == null)
         {
@@ -267,7 +278,7 @@ public partial class Player : ObservableObject
         }
         foreach (Enemy enemy in Enemies)
         {
-            if (enemy.ID == enemyID)
+            if (enemy.ID == enemyId)
             {
                 return true;
             }
@@ -278,9 +289,9 @@ public partial class Player : ObservableObject
     /// <summary>
     /// Checks if the player has played vs this Enemy and won the match
     /// </summary>
-    /// <param name="enemyID">The Player.ID of the Enemy</param>
-    /// <returns>Returns true if the player has played against this Enemy and won the amtch. Otherwise false.</returns>
-    internal bool HasPlayedAndWonVS(int enemyID)
+    /// <param name="enemyId">The Player.ID of the Enemy</param>
+    /// <returns>Returns true if the player has played against this Enemy and won the match. Otherwise false.</returns>
+    internal bool HasPlayedAndWonVs(int enemyId)
     {
         if (Enemies == null)
         {
@@ -288,7 +299,7 @@ public partial class Player : ObservableObject
         }
         foreach (Enemy enemy in Enemies)
         {
-            if (enemy.ID == enemyID)
+            if (enemy.ID == enemyId)
             {
                 return enemy.WonAgainst;
             }
@@ -298,30 +309,22 @@ public partial class Player : ObservableObject
     #endregion
 
     #region public methods
-    /// <summary>
-    /// Checks if 2 Player Objects are the same
-    /// </summary>
-    /// <param name="obj">the other object for the check</param>
-    /// <returns>True if the objects are the same</returns>
-    public override bool Equals(Object? obj)
+    public bool Equals(Player other)
     {
-        if ((obj == null) || !this.GetType().Equals(obj.GetType()))
-        {
-            return false;
-        }
-        else
-        {
-            return ID == ((Player) obj).ID;
-        }
+        return ID == other.ID;
+    }
+
+    public override int GetHashCode()
+    {
+        return ID;
     }
 
     /// <summary>
-    /// no change in this method
+    /// Creates a new Random for Order
     /// </summary>
-    /// <returns>base.GetHasCode()</returns>
-    public override int GetHashCode()
+    public void NewRandom()        
     {
-        return base.GetHashCode();
+        Order = new Random().Next(0, 99999);
     }
     #endregion
 

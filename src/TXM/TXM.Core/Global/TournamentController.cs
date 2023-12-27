@@ -543,8 +543,6 @@ public class TournamentController
             State.Io.ShowMessage(State.Text.InvalidResult);
             return;
         }
-
-        ActiveTournament.Sort();
     }
 
     private bool CheckResults(IEnumerable<Pairing> pairings)
