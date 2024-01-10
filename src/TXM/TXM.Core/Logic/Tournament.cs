@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using TXM.Core.Enums;
 using TXM.Core.Export;
 using TXM.Core.Global;
 using TXM.Core.Models;
@@ -33,6 +34,8 @@ public partial class Tournament : ObservableObject
     public string chosenScenario;
 
     public bool IsSeeded = false;
+
+    public NameDisplayMode DisplayMode { get; set; } = State.Setting.DisplayMode;
 
     private List<Player> winnerLastRound;
     public string Name { get; set; }

@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
+using TXM.Core.Enums;
+using TXM.Core.Global;
+
 namespace TXM.Core.Models;
 
 public partial class Player : ObservableObject
@@ -49,7 +52,9 @@ public partial class Player : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayName))]
-    private string? _nickname;
+    private string _nickname;
+
+    public NameDisplayMode DisplayMode { get; set; } = State.Setting.DisplayMode;
 
     [ObservableProperty]
     private int _tableNo;
@@ -155,21 +160,15 @@ public partial class Player : ObservableObject
     {
         get
         {
-            if (Nickname != "")
+            return DisplayMode switch
             {
-                return Firstname + " \"" + Nickname + "\"";
-            }
-            else
-            {
-                if (Name != null)
-                {
-                    return Firstname + " " + Name.ToCharArray()[0] + ".";
-                }
-                else
-                {
-                    return Firstname!;
-                }
-            }
+                NameDisplayMode.Nick => Nickname
+                , NameDisplayMode.FirstLast => $"{Firstname ?? Nickname} {Name ?? Nickname}"
+                , NameDisplayMode.FirstNick => $"{Firstname ?? ""} {Nickname}"
+                , NameDisplayMode.FirstNickLast => $"{Firstname ?? ""} \"{Nickname}\" {Name ?? ""}"
+                , NameDisplayMode.FistLastShort => $"{Firstname ?? Nickname} {Name?.ToCharArray()[0]}."
+                , _ => Nickname
+            };
         }
     }
     #endregion
@@ -213,6 +212,7 @@ public partial class Player : ObservableObject
         Enemies = p.Enemies;
         T3Id = p.T3Id;
         ArmyRank = p.ArmyRank;
+        DisplayMode = p.DisplayMode;
     }
 
     public Player(string name, string firstname, string nickname, string team, string city, int wins, int modifiedWins, int looses, int draws, int points, int pointsDestroyed, int pointsLost, double strengthOfSchedule, int marginOfVictory, string faction, bool hasBye, bool isPaired, bool hasWonBye, int t3Id, int rank, int armyRank, bool hasPaid, bool hasListGiven, int nr = -1)

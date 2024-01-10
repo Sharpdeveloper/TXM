@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
+using TXM.Core.Enums;
+
 namespace TXM.Core.Global;
 
 public sealed partial class Settings : ObservableObject
@@ -29,4 +31,10 @@ public sealed partial class Settings : ObservableObject
 
     [ObservableProperty]
     private bool _isTimerVisible = true;
+    
+    [ObservableProperty]
+    private bool _isRandomVisible = false;
+
+    [ObservableProperty]
+    private NameDisplayMode _displayMode = NameDisplayMode.FirstNick;
 }

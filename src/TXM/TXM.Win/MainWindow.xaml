@@ -486,6 +486,24 @@
                             </Style>
                         </DataGridTextColumn.HeaderStyle>
                     </DataGridTextColumn>
+                    <DataGridTextColumn
+                        Binding="{Binding Order}"
+                        IsReadOnly="True"
+                        Visibility="{Binding Path=DataContext.RandomVisibility, Source={StaticResource ProxyElement},  Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=DataContext.Text.RandomShort}" />
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="ToolTip"
+                                        Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=DataContext.Text.Random}" />
+                                <Setter Property="Cursor" Value="Help" />
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

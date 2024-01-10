@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using TXM.Core.Enums;
@@ -104,6 +102,8 @@ public partial class MainViewModel : ObservableObject
     public bool ScenarioVisibility =>
         ActiveTournament?.Rule != null &&
         ActiveTournament.Rule.UsesScenarios;
+
+    public bool RandomVisibility => State.Setting.IsRandomVisible;
 
     public string Title => ActiveTournament == null
         ? "TXM - The Tournament App"

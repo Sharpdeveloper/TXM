@@ -68,6 +68,14 @@ public partial class SettingsViewModel : ObservableValidator
     [ObservableProperty]
     private bool _isTimerVisible;
     
+    [ObservableProperty]
+    private bool _isRandomVisible;
+
+    [ObservableProperty]
+    private string _displayMode;
+
+    public List<string> DisplayModes { get; set; }
+    
     [RelayCommand]
     private void SelectImageFile()
     {

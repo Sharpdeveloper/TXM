@@ -15,6 +15,11 @@ public partial class TournamentViewModel: ObservableObject
 
     [ObservableProperty]
     private string _title;
+    
+    [ObservableProperty]
+    private string _displayMode;
+
+    public List<string> DisplayModes { get; set; }
 
     public string GameSystem
     {

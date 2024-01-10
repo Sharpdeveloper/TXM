@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 
 using TXM.Core.Enums;
@@ -7,6 +6,7 @@ using TXM.Core.Interfaces;
 using TXM.Core.Logic;
 using TXM.Core.Models;
 using TXM.Core.ViewModels;
+using TXM.Core.Extensions;
 
 namespace TXM.Core.Global;
 
@@ -385,6 +385,10 @@ public class TournamentController
             , StartTime = $"{State.Timer.StartHour:D2}:{State.Timer.StartMinute:D2}"
             , BgImagePath = State.Setting.BgImagePath
             , CheckLanguageText = State.Text.CheckLanguages
+            , IsRandomVisible = State.Setting.IsRandomVisible
+            , IsTimerVisible = State.Setting.IsTimerVisible
+            , DisplayMode = State.Setting.DisplayMode.GetText()
+            , DisplayModes = State.Setting.DisplayMode.GetTexts()
         };
         var lang = State.Io.GetLanguages();
         lang.Files.ForEach(x => svm.LanguageData.Add(x));
@@ -405,10 +409,24 @@ public class TournamentController
             State.Timer.StartHour = svm.StartingHour;
             State.Timer.StartMinute = svm.StartingHour;
             State.Setting.IsTimerVisible = svm.IsTimerVisible;
+            State.Setting.IsRandomVisible = svm.IsRandomVisible;
+            var oldDisplayMode = State.Setting.DisplayMode;
+            State.Setting.DisplayMode = svm.DisplayMode.GetDisplayMode();
             State.Io.SaveSettings();
             if (oldLang != State.Setting.Language)
             {
                 State.Io.ShowMessage(State.Text.NewLanguageInfo);
+            }
+            if (oldDisplayMode != State.Setting.DisplayMode && ActiveTournament != null)
+            {
+                if (State.Io.ShowMessageWithOKCancel(State.Text.DisplayModeChange))
+                {
+                    ActiveTournament.DisplayMode = State.Setting.DisplayMode;
+                    foreach (var p in ActiveTournament.Participants)
+                    {
+                        p.DisplayMode = State.Setting.DisplayMode;
+                    }
+                }
             }
         }
     }
@@ -458,8 +476,12 @@ public class TournamentController
     {
         var tvm = new TournamentViewModel
         {
-            ActiveTournament = tournament, Title = dialogTitle, TournamentSystems = tournamentSystems
+            ActiveTournament = tournament
+            , Title = dialogTitle
+            , TournamentSystems = tournamentSystems
             , IsGameSystemChangeable = isGameSystemChangeable
+            , DisplayMode = tournament.DisplayMode.GetText()
+            , DisplayModes = tournament.DisplayMode.GetTexts()
         };
         var dialogResult = State.DialogService.ShowDialog<TournamentViewModel>(
             result => { tvm = (TournamentViewModel)result; }
@@ -468,6 +490,18 @@ public class TournamentController
         {
             ActiveTournament = tvm.ActiveTournament;
             State.Timer.DefaultTime = ActiveTournament.Rule?.DefaultTime ?? 60;
+            var oldDisplayMode = ActiveTournament.DisplayMode;
+            ActiveTournament.DisplayMode = tvm.DisplayMode.GetDisplayMode();
+            if (oldDisplayMode != ActiveTournament.DisplayMode && ActiveTournament.Participants.Count > 0)
+            {
+                if (State.Io.ShowMessageWithOKCancel(State.Text.DisplayModeTournamentChange))
+                {
+                    foreach (var p in ActiveTournament.Participants)
+                    {
+                        p.DisplayMode = ActiveTournament.DisplayMode;
+                    }
+                }
+            }
         }
     }
 
@@ -475,11 +509,18 @@ public class TournamentController
     {
         var pvm = new PlayerViewModel()
         {
-            ActivePlayer = player, Title = dialogTitle
+            ActivePlayer = player
+            , Title = dialogTitle
+            , DisplayMode = player.DisplayMode.GetText()
+            , DisplayModes = player.DisplayMode.GetTexts()
         };
         var dialogResult = State.DialogService.ShowDialog<PlayerViewModel>(
             result => { pvm = (PlayerViewModel)result; }
             , pvm);
+        if (dialogResult == true)
+        {
+            pvm.ActivePlayer.DisplayMode = pvm.DisplayMode.GetDisplayMode();
+        }
         return (dialogResult, pvm.ActivePlayer);
     }
 

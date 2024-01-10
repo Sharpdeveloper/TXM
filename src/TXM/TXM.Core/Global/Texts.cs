@@ -68,6 +68,17 @@ public sealed class Texts
         "If the tournament has no cut, the number should be 0. If it has a cut enter the number of players who can get to the cut.";
 
     public string Date { get; set; } = "Date";
+    public string DefaultDisplay { get; set; } = "Default Display Mode:";
+    public string DefaultDisplayInfo { get; set; } = "This sets the default display mode for tournaments and players.";
+    public string DefaultDisplayTournamentInfo { get; set; } = "This sets the default display mode for the players of this tournament.";
+    public string DefaultDisplayPlayerInfo { get; set; } = "This sets the default display mode for this player.";
+    public string DisplayFirstAndLast { get; set; } = "Display Firstname and Lastname (John Doe)";
+    public string DisplayFirstAndLastShort { get; set; } = "Display Firstname and Lastname short (John D.)";
+    public string DisplayFirstAndNick { get; set; } = "Display Firstname and Nickname (John 'JD')";
+    public string DisplayFirstNickAndLast { get; set; } = "Display Firstname, Nickname, and Lastname (John 'JD' Doe)";
+    public string DisplayOnlyNick { get; set; } = "Display only Nickname ('JD')";
+    public string DisplayModeChange { get; set; } = "Should the new display mode also applied to the current tournament and players (this would overwrite their current display mode settings)?";
+    public string DisplayModeTournamentChange { get; set; } = "Should the new display mode also applied to the players of the tournament (this would overwrite their current display mode settings)?";
     public string Disqualified { get; set; } = "disqualified";
     public string Disqualify { get; set; } = "disqualify";
     public string DoubleLoss { get; set; } = "DoubleLoss";
@@ -176,6 +187,12 @@ public sealed class Texts
     public string ModifiedWins { get; set; } = "Modified Wins";
     public string ModifiedWinsShort { get; set; } = "MW";
     public string Name { get; set; } = "Name";
+    public Dictionary<string, string> NameDisplayMode { get; set; } = new()
+    {
+        { Literals.Black, "Black" }, { Literals.Blue, "Blue" }, { Literals.Green, "Green" }
+        , { Literals.Orange, "Orange" }, { Literals.Purple, "Purple" }, { Literals.Red, "Red" }
+        , { Literals.White, "White" }, { Literals.Yellow, "Yellow" }
+    };
     public string NewLanguageInfo { get; set; } = "To apply the new language, you have to restart TXM.";
     public string NewPlayer { get; set; } = "New Player";
     public string NewTournament { get; set; } = "New Tournament";
@@ -204,6 +221,8 @@ public sealed class Texts
         "Team protection prevents team members to get paired against each other. Only recommended for casual events.";
 
     public string Ok { get; set; } = "OK";
+    public string Random { get; set; } = "Random";
+    public string RandomShort { get; set; } = "RN";
     public string RandomMinutes { get; set; } = "How many Minutes should at max randomized?";
 
     public string RandomMinutesInfo { get; set; } =
@@ -211,9 +230,9 @@ public sealed class Texts
 
     public string RandomTime { get; set; } = "Shall the time be randomized?";
 
-    public string RandomTimeInfo { get; set; } =
-        "The timer can add/subtract a random amount of minutes from the time.";
-
+    public string RandomTimeInfo { get; set; } = "The timer can add/subtract a random amount of minutes from the time.";
+    public string RandomVisibility { get; set; } = "Should \"Random\" be shown?";
+    public string RandomVisibilityInfo { get; set; } = "In many tournament rules the last tie-breaker for the ranking ist a random number. TXM will calculate this automatically in the background. If you are interested in the numbers you can turn this on.";
     public string Rank { get; set; } = "Rank";
     public string RankShort { get; set; } = "#";
     public string Remove { get; set; } = "remove";

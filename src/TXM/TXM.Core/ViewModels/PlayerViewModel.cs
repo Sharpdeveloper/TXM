@@ -19,4 +19,9 @@ public partial class PlayerViewModel : ObservableObject
 
     [ObservableProperty]
     private string[] _factions = State.Controller.ActiveTournament.Rule.Factions;
+    
+    [ObservableProperty]
+    private string _displayMode;
+
+    public List<string> DisplayModes { get; set; }
 }

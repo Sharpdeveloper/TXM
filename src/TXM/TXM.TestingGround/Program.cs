@@ -6,10 +6,10 @@ using TXM.Core.Logic;
 using TXM.Core;
 using TXM.Core.Global;
 
-State.Io.SaveLanguage();
+//State.Io.SaveLanguage();
 //State.Io.LoadLanguage("Deutsch");
-Console.WriteLine(State.Text.AboutText);
-Console.WriteLine(State.Text.Cancel);
+//Console.WriteLine(State.Text.AboutText);
+//Console.WriteLine(State.Text.Cancel);
 
 // Player p = new Player("Becker", "Martin", "TKundNobody", "Pirates of Tatooine", "Germany", 3, 2, 1, 1, 100, 222, 111, 3.5, 123, "Rebels", false, false, false, 1233455, 1, 4, true, true, 2);
 // Result r = new Result(200, 111, 3, 200, 2, 3);
@@ -93,3 +93,27 @@ Console.WriteLine(State.Text.Cancel);
 //     int b = (int) Math.Ceiling(log2);
 //     Console.WriteLine($"a {a}  log2 {log2}  b {b}");
 // }
+
+
+
+
+Console.WriteLine("The values of the Colors Enum are:");
+foreach(int i in Enum.GetValues(typeof(Colors))) {
+    Console.WriteLine($" {i}");
+}
+Console.WriteLine();
+// Get names of
+foreach(string name in Enum.GetNames(typeof(Fruits))) {
+    Console.WriteLine(name);
+}
+
+enum Colors {
+    Red,
+    Orange,
+    Green,
+    Blue,
+    Black
+};
+enum Fruits {
+    Apple = 1, Banana = 2, Orange = 3, Peer = 4
+};
