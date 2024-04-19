@@ -58,7 +58,7 @@ public class TournamentController
 
         if (overwrite)
         {
-            ActiveTournament = State.Io.Load(filename);
+            ActiveTournament = State.Io.Load(filename, autosave);
         }
 
         if (ActiveTournament != null)
@@ -183,8 +183,8 @@ public class TournamentController
     {
         if (ActiveTournament.Participants.Count != 0)
         {
-            State.Io.Save(true, State.Text.SaveStateStart);
             ActiveTournament.StartTournament();
+            State.Io.Save(true, State.Text.SaveStateStart);
         }
         else
         {
@@ -556,6 +556,7 @@ public class TournamentController
         {
             ActiveTournament.NextRound();
         }
+        State.Io.Save(true, State.Text.SaveStatePairing);
     }
 
     public void GetResults()
@@ -578,6 +579,7 @@ public class TournamentController
         if (CheckResults(pairings))
         {
             ActiveTournament.GetResults();
+            State.Io.Save(true, State.Text.SaveStateResults);
         }
         else
         {

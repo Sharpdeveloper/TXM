@@ -24,16 +24,16 @@ public partial class MainViewModel : ObservableObject
     private bool IsStartExecuteable => ActiveTournament!= null && !ActiveTournament.IsStarted;
 
     private bool IsPairingsChangeExecutable =>
-        ActiveTournament?.Rounds.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
+        ActiveTournament?.Rounds?.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
 
     private bool IsResultResetable =>
-        ActiveTournament?.Rounds.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
+        ActiveTournament?.Rounds?.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
 
     private bool IsShowPairingsExecutable =>
-        ActiveTournament?.Rounds.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
+        ActiveTournament?.Rounds?.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
     
     private bool IsShowResultsExecutable =>
-        ActiveTournament?.Rounds.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
+        ActiveTournament?.Rounds?.Count > 0 && ActiveTournament?.Rounds[^1].Pairings != null;
 
     private bool IsShowTableExecutable => ActiveTournament?.Participants.Count > 0;
     private bool IsShowBestInFactionExecutable => ActiveTournament?.Participants.Count > 0;
@@ -398,8 +398,11 @@ public partial class MainViewModel : ObservableObject
 
     private void SetScenarios()
     {
-        Scenarios = ActiveTournament?.ActiveScenarios;
-        ChosenScenario = Scenarios.Count > 0 ? Scenarios[0] : "";
+        if(ActiveTournament != null)
+        {
+            Scenarios = ActiveTournament.ActiveScenarios;
+            ChosenScenario = Scenarios.Count > 0 ? Scenarios[0] : "";
+        }
     }
 
     private void SetGetResultsText()

@@ -23,14 +23,8 @@
         </Grid.ColumnDefinitions>
         <ContentControl Visibility="Collapsed"
                         Content="{StaticResource ProxyElement}" />
-        <!-- <Grid Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0"> -->
-        <!-- </Grid> -->
-        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
-            <Menu HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="40" Width="47" Margin="-5,0,0,0">
-                <MenuItem Background="LightGray">
-                    <MenuItem.Header>
-                        <Image Source="pack://application:,,,/Resources/Icons/icons8-menü-abgerundet-100.png" />
-                    </MenuItem.Header>
+        <Grid Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0">
+            <Menu>
                     <MenuItem Header="{Binding Text.MenuFile}">
                         <MenuItem Header="{Binding Text.MenuNewTournament}"
                                   Command="{Binding NewTournamentCommand}" />
@@ -112,9 +106,10 @@
                         <MenuItem Header="{Binding Text.MenuSupport}" Command="{Binding ShowSupportCommand}" />
                         <MenuItem Header="{Binding Text.MenuAbout}" Command="{Binding ShowAboutCommand}" />
                     </MenuItem>
-                </MenuItem>
             </Menu>
-            <ToolBar Background="LightGray" Margin="40,0,0,0">
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+            <ToolBar>
                 <Button Content="{Binding Text.Start}"
                         ToolTip="{Binding Text.StartInfo}"
                         Command="{Binding StartCommand}" />
@@ -167,7 +162,7 @@
                        Content="{Binding ChosenScenarioLabel}"
                        Visibility="{Binding Path=DataContext.ScenarioVisibility, Source={StaticResource ProxyElement},  Converter={StaticResource BooleanToVisibilityConverter}}" />
             </ToolBar>
-            <ToolBar HorizontalAlignment="Right" Background="LightGray">
+            <ToolBar HorizontalAlignment="Right">
                 <Button ToolTip="Start" Command="{Binding StartTimerCommand}">
                     <Image Source="pack://application:,,,/Resources/Icons/icons8-play-96.png" Width="24" Height="24" />
                 </Button>
@@ -189,8 +184,7 @@
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                       ItemsSource="{Binding ActiveTournament.Participants}"
-                      SelectedItem="{Binding SelectedPlayer}"
-                      PreviewKeyDown="DataGridPlayer_OnPreviewKeyDown">
+                      SelectedItem="{Binding SelectedPlayer}">
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Binding="{Binding Rank}"

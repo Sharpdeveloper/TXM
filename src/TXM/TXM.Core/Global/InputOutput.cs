@@ -207,12 +207,19 @@ public sealed class InputOutput
     /// </summary>
     /// <param name="filename">Optional filename</param>
     /// <returns>A tournament object or null</returns>
-    public Logic.Tournament? Load(string filename = "")
+    public Logic.Tournament? Load(string filename = "", bool autosave = false)
     {
         string file;
         if (filename != "")
         {
-            file = filename;
+            if (autosave)
+            {
+                file = Path.Combine(AutosavePath, filename);
+            }
+            else
+            {
+                file = filename;
+            }
         }
         else
         {
@@ -241,7 +248,7 @@ public sealed class InputOutput
 
             return JsonSerializer.Deserialize<Logic.Tournament>(sb.ToString());
         }
-        catch (Exception)
+        catch (Exception e)
         {
             MessageManager.Show(State.Text.InvalidFile.Replace("<filetype>", Settings.FileExtension));
             return null;

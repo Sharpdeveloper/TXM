@@ -69,12 +69,12 @@
         <Label Content="{Binding Text.TournamentType}" ToolTip="{Binding Text.TournamentTypeInfo}" Cursor="Help" Grid.Column="0" Grid.Row="12"/>
         <ComboBox ItemsSource="{Binding ActiveTournament.TournamentTypes}" SelectedItem="{Binding Type}" Grid.Column="2" Grid.ColumnSpan="3"  Grid.Row="12"/>
        
-        <Label Grid.Row="16" Grid.Column="0" Content="{Binding Text.DefaultDisplay}"
+        <Label Grid.Row="14" Grid.Column="0" Content="{Binding Text.DefaultDisplay}"
                ToolTip="{Binding Text.DefaultDisplayTournamentInfo}" Cursor="Help" />
-        <ComboBox Grid.Row="16" Grid.Column="2" Grid.ColumnSpan="3" ItemsSource="{Binding DisplayModes}"
+        <ComboBox Grid.Row="14" Grid.Column="2" Grid.ColumnSpan="3" ItemsSource="{Binding DisplayModes}"
                   SelectedValue="{Binding DisplayMode}"/>
         
-        <Button Content="{Binding Text.Ok}" Click="NewTournament_Click" Grid.Column="2" Grid.Row="18"/>
-        <Button Content="{Binding Text.Cancel}" Click="Cancel_Click" Grid.Column="4" Grid.Row="18"/>
+        <Button Content="{Binding Text.Ok}" Click="NewTournament_Click" Grid.Column="2" Grid.Row="16"/>
+        <Button Content="{Binding Text.Cancel}" Click="Cancel_Click" Grid.Column="4" Grid.Row="16"/>
     </Grid>
 </Window>

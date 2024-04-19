@@ -49,7 +49,7 @@ public partial class Tournament : ObservableObject
     public bool WonByeCalculated { get; internal set; }
     public bool TeamProtection { get; set; }
 
-    public string DisplayedRound => SelectedRound + 1 <= Rounds.Count ? Rounds[SelectedRound].RoundText : "";
+    public string DisplayedRound => SelectedRound + 1 <= Rounds?.Count ? Rounds[SelectedRound].RoundText : "";
 
     [JsonConverter(typeof(RuleConverter))]
     public AbstractRules? Rule
@@ -99,7 +99,8 @@ public partial class Tournament : ObservableObject
     #endregion
 
     #region Constructors
-
+    public Tournament()
+    {}
     public Tournament(string name): this(name, null )
     {
     }
@@ -147,7 +148,10 @@ public partial class Tournament : ObservableObject
     /// </summary>
     /// <param name="id">The id of the player which should be returned</param>
     /// <returns>The player with the ID</returns>
-    public Player GetPlayerById(int id) => Enumerable.First<Player>(Participants, x => x.ID == id);
+    public Player GetPlayerById(int id)
+    {
+        return id < 0 ? Player.GetBye(id) : Participants.First(x => x.ID == id);
+    }
 
     /// <summary>
     /// Add a player to the tournament for begin and first round only
@@ -197,7 +201,7 @@ public partial class Tournament : ObservableObject
         }
 
         IsStarted = true;
-        SeedPlayers(new Random());
+        //SeedPlayers(new Random());
     }
 
     /// <summary>

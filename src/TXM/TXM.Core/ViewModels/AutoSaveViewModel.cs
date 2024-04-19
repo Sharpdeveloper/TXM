@@ -10,11 +10,11 @@ public partial class AutoSaveViewModel : ObservableObject
     [ObservableProperty]
     public List<AutoSaveFile> files;
     
-    public string FileName => SelectedFile.FileName;
+    public string FileName => SelectedFile == null ? "" : SelectedFile.FileName;
 
     [ObservableProperty]
     public Texts text = State.Text;
 
     [ObservableProperty]
-    public AutoSaveFile selectedFile;
+    private AutoSaveFile? _selectedFile;
 }

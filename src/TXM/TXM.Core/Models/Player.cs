@@ -16,6 +16,7 @@ public partial class Player : ObservableObject
         _bye ??= new Player("Bye")
         {
             ID = -1
+            
         };
 
     private static Player? _wonBye;
@@ -160,6 +161,10 @@ public partial class Player : ObservableObject
     {
         get
         {
+            if (ID < 0)
+            {
+                DisplayMode = NameDisplayMode.Nick;
+            }
             return DisplayMode switch
             {
                 NameDisplayMode.Nick => Nickname
@@ -174,6 +179,8 @@ public partial class Player : ObservableObject
     #endregion
 
     #region Constructors
+    public Player()
+    {}
     //Copy Constructor
     public Player(Player p)
     {

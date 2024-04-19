@@ -244,6 +244,7 @@ public sealed class Texts
     public string Save { get; set; } = "Save";
     public string SaveStateChange { get; set; } = "Change_Pairings";
     public string SaveStatePairing { get; set; } = "Pairings_Round_";
+    public string SaveStateResults { get; set; } = "GetResults_Round_";
     public string SaveStateSeeding { get; set; } = "Seeding_Round_";
     public string SaveStateStart { get; set; } = "Tournament_Start";
     public string Score { get; set; } = "Score";
