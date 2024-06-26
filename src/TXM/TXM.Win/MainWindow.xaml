@@ -598,10 +598,16 @@
                                     Binding="{Binding Player1Points}"
                                     IsReadOnly="False"
                                     Visibility="{Binding Path=DataContext.PointsVisibility, Source={StaticResource ProxyElement},  Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=DataContext.Text.Player1PointsShort}" />
+                                        </DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
                                     <DataGridTextColumn.HeaderStyle>
                                         <Style TargetType="DataGridColumnHeader">
                                             <Setter Property="ToolTip"
-                                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=DataContext.Text.Player1PointsShort}" />
+                                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=DataContext.Text.Player1Points}" />
                                             <Setter Property="Cursor" Value="Help" />
                                         </Style>
                                     </DataGridTextColumn.HeaderStyle>

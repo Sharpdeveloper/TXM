@@ -14,14 +14,16 @@ namespace TXM.Core
 
         public ShatterpointRules()
         {
-            IsDrawPossible = false;
-            OptionalFields = new List<string>() { "MoV" };
+            IsDrawPossible = true;
+            OptionalFields = new List<string>() { "MoV"};
+            movName = "Struggle";
             IsDoubleElimination = false;
             IsRandomSeeding = true;
-            IsWinnerDropDownNeeded = true;
+            IsWinnerDropDownNeeded = false;
+            tournamentPoints = true;
             DefaultMaxPoints = 0;
             Factions = new string[] { "Fall of the Jedi", "Age of Rebellion" };
-            DefaultTime = 75;
+            DefaultTime = 120;
             base.name = name;
         }
 
@@ -34,15 +36,10 @@ namespace TXM.Core
 		{
 			Result newResult = result;
 
-            if (newResult.MaxPoints == 0)
-            {
-                newResult.MaxPoints = DefaultMaxPoints;
-            }
-
             //ID == -1 => Bye
             if (result.EnemyID == -1)
 			{
-				newResult = new Result((int)(0.5 * result.MaxPoints), 0, result.EnemyID, result.MaxPoints, result.WinnerID);
+				newResult = new Result(2, 0, result.EnemyID, result.MaxPoints, result.WinnerID);
 			}
 			//ID == -2 => WonBye
 			else if (result.EnemyID == -2)

@@ -132,10 +132,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void NewTournament()
     {
-        State.Controller.NewTournament();
-        ActiveTournament = State.Controller.ActiveTournament;
-        SetScenarios();
-        CheckNotifyCanExecuteChanged();
+        if (State.Controller.NewTournament())
+        {
+            ActiveTournament = State.Controller.ActiveTournament;
+            SetScenarios();
+            CheckNotifyCanExecuteChanged();
+        }
     }
 
     [RelayCommand]

@@ -165,17 +165,17 @@ public class TournamentController
         Process.Start(psi);
     }
 
-    public void NewTournament()
+    public bool NewTournament()
     {
         if (ActiveTournament != null)
         {
             if (!State.Io.ShowMessageWithOKCancel(State.Text.OverwrittenWarning))
             {
-                return;
+                return false;
             }
         }
 
-        OpenTournamentDialog(State.Text.NewTournament, new Tournament(State.Text.NewTournament)
+        return OpenTournamentDialog(State.Text.NewTournament, new Tournament(State.Text.NewTournament)
             , AbstractRules.GetAllRuleNames());
     }
 
@@ -469,7 +469,7 @@ public class TournamentController
         _openWindows.Add(Literals.Projector, window);
     }
 
-    private void OpenTournamentDialog(string dialogTitle
+    private bool OpenTournamentDialog(string dialogTitle
         , Tournament tournament
         , List<string> tournamentSystems
         , bool isGameSystemChangeable = true)
@@ -503,6 +503,8 @@ public class TournamentController
                 }
             }
         }
+
+        return dialogResult == true;
     }
 
     private (bool? result, Player player) OpenPlayerDialog(string dialogTitle, Player player)
